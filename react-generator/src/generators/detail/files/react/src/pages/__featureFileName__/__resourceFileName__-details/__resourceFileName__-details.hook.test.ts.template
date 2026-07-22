@@ -1,0 +1,231 @@
+import { renderHook, waitFor, act } from '@testing-library/react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { use<%= resourceClassName %>Details } from './<%= resourceFileName %>-details.hook';
+import { <%= serviceName %> } from '../../../api/api';
+
+vi.mock('../../../api/api', () => {
+  const mockInstance = {
+    get<%= resource %>ById: vi.fn(),
+    update<%= resource %>ById: vi.fn(),
+    delete<%= resource %>ById: vi.fn(),
+  };
+  class Mock<%= serviceName %> {
+    constructor() {
+      return mockInstance;
+    }
+  }
+  return {
+    <%= serviceName %>: Mock<%= serviceName %>,
+  };
+});
+
+describe('use<%= resourceClassName %>Details', () => {
+  let mockService: any;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockService = new <%= serviceName %>();
+  });
+
+  it('should initialize with empty state', () => {
+    const { result } = renderHook(() => use<%= resourceClassName %>Details(mockService));
+    
+    expect(result.current.details).toBeUndefined();
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBeNull();
+  });
+
+  it('should fetch details when id is provided', async () => {
+    const mockDetails = {
+      id: 'test-id',
+      modificationCount: 0,
+      // ACTION D11: Add additional fields to match your implementation
+    };
+
+    mockService.get<%= resource %>ById.mockResolvedValue({
+      data: {
+        resource: mockDetails,
+      },
+    });
+
+    const { result } = renderHook(() => use<%= resourceClassName %>Details(mockService));
+
+    await act(async () => {
+      await result.current.fetchDetails('test-id');
+    });
+
+    await waitFor(() => {
+      expect(result.current.details).toEqual(mockDetails);
+      expect(result.current.loading).toBe(false);
+    });
+  });
+
+  it('should handle fetch errors', async () => {
+    mockService.get<%= resource %>ById.mockRejectedValue(
+      new Error('Failed to fetch')
+    );
+
+    const { result } = renderHook(() => use<%= resourceClassName %>Details(mockService));
+
+    await act(async () => {
+      await result.current.fetchDetails('test-id');
+    });
+
+    await waitFor(() => {
+      expect(result.current.error).toBe('Failed to fetch');
+      expect(result.current.loading).toBe(false);
+    });
+  });
+
+  <%_ if(editMode){ _%>
+  it('should update details successfully', async () => {
+    const mockDetails = {
+      id: 'test-id',
+      modificationCount: 1,
+    };
+
+    mockService.get<%= resource %>ById.mockResolvedValue({
+      data: {
+        resource: mockDetails,
+      },
+    });
+    mockService.update<%= resource %>ById.mockResolvedValue(undefined);
+
+    const { result } = renderHook(() => use<%= resourceClassName %>Details(mockService));
+
+    await act(async () => {
+      await result.current.fetchDetails('test-id');
+    });
+
+    await waitFor(() => {
+      expect(result.current.details).toEqual(mockDetails);
+    });
+
+    const success = await act(async () => {
+      return await result.current.updateDetails(mockDetails);
+    });
+
+    await waitFor(() => {
+      expect(success).toBe(true);
+      expect(result.current.isSubmitting).toBe(false);
+    });
+  });
+
+  it('should handle update errors', async () => {
+    const mockDetails = {
+      id: 'test-id',
+      modificationCount: 1,
+    };
+
+    mockService.get<%= resource %>ById.mockResolvedValue({
+      data: {
+        resource: mockDetails,
+      },
+    });
+    mockService.update<%= resource %>ById.mockRejectedValue(
+      new Error('Failed to update')
+    );
+
+    const { result } = renderHook(() => use<%= resourceClassName %>Details(mockService));
+
+    await act(async () => {
+      await result.current.fetchDetails('test-id');
+    });
+
+    await waitFor(() => {
+      expect(result.current.details).toEqual(mockDetails);
+    });
+
+    const success = await act(async () => {
+      return await result.current.updateDetails(mockDetails);
+    });
+
+    await waitFor(() => {
+      expect(success).toBe(false);
+      expect(result.current.error).toBe('Failed to update');
+      expect(result.current.isSubmitting).toBe(false);
+    });
+  });
+  <%_ } _%>
+
+  <%_ if(allowDelete){ _%>
+  it('should delete details successfully', async () => {
+    const mockDetails = {
+      id: 'test-id',
+      modificationCount: 0,
+    };
+
+    mockService.get<%= resource %>ById.mockResolvedValue({
+      data: {
+        resource: mockDetails,
+      },
+    });
+    mockService.delete<%= resource %>ById.mockResolvedValue(undefined);
+
+    const { result } = renderHook(() => use<%= resourceClassName %>Details(mockService));
+
+    await act(async () => {
+      await result.current.fetchDetails('test-id');
+    });
+
+    await waitFor(() => {
+      expect(result.current.details).toEqual(mockDetails);
+    });
+
+    const success = await act(async () => {
+      return await result.current.deleteDetails();
+    });
+
+    await waitFor(() => {
+      expect(success).toBe(true);
+      expect(result.current.isDeleting).toBe(false);
+    });
+  });
+
+  it('should handle delete errors', async () => {
+    const mockDetails = {
+      id: 'test-id',
+      modificationCount: 0,
+    };
+
+    mockService.get<%= resource %>ById.mockResolvedValue({
+      data: {
+        resource: mockDetails,
+      },
+    });
+    mockService.delete<%= resource %>ById.mockRejectedValue(
+      new Error('Failed to delete')
+    );
+
+    const { result } = renderHook(() => use<%= resourceClassName %>Details(mockService));
+
+    await act(async () => {
+      await result.current.fetchDetails('test-id');
+    });
+
+    await waitFor(() => {
+      expect(result.current.details).toEqual(mockDetails);
+    });
+
+    const success = await act(async () => {
+      return await result.current.deleteDetails();
+    });
+
+    await waitFor(() => {
+      expect(success).toBe(false);
+      expect(result.current.error).toBe('Failed to delete');
+      expect(result.current.isDeleting).toBe(false);
+    });
+  });
+
+  it('should return false when deleting without id', async () => {
+    const { result } = renderHook(() => use<%= resourceClassName %>Details(mockService));
+    
+    const success = await act(async () => {
+      return await result.current.deleteDetails();
+    });
+
+    expect(success).toBe(false);
+  });
+  <%_ } _%>
+});

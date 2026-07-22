@@ -14,6 +14,26 @@
       "factory": "./src/generators/pre-commit-validation/generator",
       "schema": "./src/generators/pre-commit-validation/schema.json",
       "description": "pre-commit-validation generator"
+    },
+    "react-search": {
+      "factory": "./src/generators/search/generator",
+      "schema": "./src/generators/search/schema.json",
+      "description": "react-search generator"
+    },
+    "react-page": {
+      "factory": "./src/generators/page/generator",
+      "schema": "./src/generators/page/schema.json",
+      "description": "react page generator"
+    },
+    "react-feature": {
+      "factory": "./src/generators/feature/generator",
+      "schema": "./src/generators/feature/schema.json",
+      "description": "react feature generator"
+    },
+    "react-details": {
+      "factory": "./src/generators/detail/generator",
+      "schema": "./src/generators/detail/schema.json",
+      "description": "react details generator"
     }
   }
 }

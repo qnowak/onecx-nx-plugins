@@ -1,0 +1,135 @@
+ifdef::env-site[]
+include::partial$_attributes.adoc[]
+endif::[]
+:imagesdir: ../../images
+
+= Create a React Page
+
+What is a Page?::
+ifdef::env-site[]
+include::partial$_glossary.adoc[tag=component]
+endif::[]
+
+Empty Page::
+The React page generator creates a minimal, ready-to-use page with a header and a content area. It is the right starting point for utility pages such as settings, about or dashboard pages that do not need search or API integration.
+
+[NOTE]
+This page describes the *React* page generator (`react-page`). For a data-driven search page, see xref:./create-react-search.adoc[Create a React Search Page].
+
+
+== Generate a React Page
+
+The current working directory must be the root of an existing OneCX React UI Application.
+
+.Create a React page with the following command
+[source,bash]
+----
+nx generate <namespace>/react-generator:react-page <feature>
+----
+
+with:
+[horizontal]
+ifdef::env-site[]
+include::partial$_parameter.adoc[tag=namespace]
+include::partial$_parameter.adoc[tag=featureName]
+endif::[]
+
+Next, *you will be asked* for the page name and the page title.
+
+[horizontal]
+ifdef::env-site[]
+include::partial$_parameter.adoc[tag=pageName]
+include::partial$_parameter.adoc[tag=pageTitle]
+include::partial$_parameter.adoc[tag=standalone]
+endif::[]
+
+The generator creates the page, registers it in the feature and adds a route, so it is reachable immediately.
+
+
+=== Generated Structure
+The generator creates the following files (exemplary for the *book* feature, page *Book*):
+
+[source, text]
+----
+src/pages/<feature>/<page>/
+  <page>.page.tsx        # Page component (BookPage)
+  <page>.page.test.tsx   # Jest/Testing Library tests
+
+src/components/accelerator/   # Shared UI building blocks (generated only if not present)
+----
+
+In addition the generator:
+
+* registers the page in the feature barrel `+src/pages/<feature>/index.tsx+`,
+* adds a route for the page to `+src/router.tsx+`,
+* merges the i18n templates (`+HEADER+`, `+SUB_HEADER+`, `+ARIA_LABEL+`) into the translation files,
+* adds the `+<PAGE>#VIEW+` permission to `+helm/values.yaml+`.
+
+
+=== Key Naming Conventions
+* `src/pages/<feature>/<page>` +
+  Directory for the page and its related files
+* `<Page>Page` +
+  Name for the page component
+* `<PAGE>` +
+  Prefix for the generated i18n translation keys
+
+The generated page is gated on the `+<PAGE>#VIEW+` permission. Generate with `+--standalone+` to skip permission gating for standalone apps.
+
+
+== Post-Generation Steps
+The page is intentionally minimal and contains *no `+ACTION+` markers*. Only a few light adjustments are typically needed:
+
+. Replace the three translation placeholders (`+HEADER+`, `+SUB_HEADER+`, `+ARIA_LABEL+`), which are generated as `+ACTION: ADD TRANSLATION+`.
+. Add your page content inside the `+<Content>+` area of `+<page>.page.tsx+`.
+. Ensure the `+<PAGE>#VIEW+` permission exists in your auth system (or use `+--standalone+`).
+
+[horizontal]
+Directory:: `+src/pages/<feature>/<page>+`
+File::      `+<page>.page.tsx+`
+
+.Generated page component (excerpt)
+[%collapsible]
+====
+[source, tsx]
+----
+export const <Page>Page: FC = () => {
+  const { t } = useTranslation();
+
+  return (
+    <PortalPage
+      permission="<PAGE>#VIEW"
+      ariaLabel={t('<PAGE>.ARIA_LABEL')}
+    >
+      <PageHeader
+        header={t('<PAGE>.HEADER')}
+        subheader={t('<PAGE>.SUB_HEADER')}
+      />
+
+      <Content>
+        <h1 className="m-0 p-0 text-xl font-bold"><page title></h1>
+      </Content>
+    </PortalPage>
+  );
+};
+----
+Add your page content inside the `+<Content>+` element.
+====
+
+
+== Example
+
+Create a *book* page inside the *book* feature, with the title "Books". +
+Execute the following command with the *bookstore* application as current working directory.
+
+.Create a React Page for Books
+[source,bash]
+----
+nx generate @onecx/react-generator:react-page book
+----
+
+When prompted, enter `+Book+` as the page name and `+Books+` as the page title. The generator creates `+BookPage+` under `+src/pages/book/book+`, registers it and adds a route.
+
+// TODO: capture screenshot of the generated React page (header + content) for the book feature
+.Generated React page after integration into the application
+image::react_generated_book_page.png[]

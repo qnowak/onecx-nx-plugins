@@ -8,8 +8,8 @@
     "url": "git+https://github.com/onecx/onecx-nx-plugins.git"
   },
   "dependencies": {
-    "@nx/devkit": "^19.8.14",
     "@nx/angular": "^19.8.14",
+    "@nx/devkit": "^19.8.14",
     "@nx/eslint-plugin": "^19.8.14",
     "ejs": "^3.1.9",
     "enquirer": "^2.3.6",

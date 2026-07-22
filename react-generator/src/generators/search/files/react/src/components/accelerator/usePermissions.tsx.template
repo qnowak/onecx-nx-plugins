@@ -1,0 +1,100 @@
+import {
+  createContext,
+  useContext,
+  useMemo,
+  type FC,
+  type PropsWithChildren,
+  type ReactNode,
+} from 'react';
+
+/**
+ * React equivalent of the OneCX Angular permission model.
+ *
+ * Angular gates UI via `HAS_PERMISSION_CHECKER` / `UserService.getPermissions()`
+ * and the `*ocxIfPermission` directive. There is no OneCX React shell available
+ * here yet, so this provides a local seam: wrap the app (or a page) in
+ * `PermissionsProvider` to supply the granted permissions, and use
+ * `usePermissions()` / `IfPermission` to gate UI.
+ *
+ * Default behavior grants every permission — this matches Angular's
+ * `AlwaysGrantPermissionChecker` used for standalone apps. Replace the provider
+ * value with a real permission source once a OneCX React integration exists.
+ */
+export type PermissionInput = string | string[] | undefined;
+
+export type PermissionChecker = (permission: string) => boolean;
+
+export interface PermissionsContextValue {
+  hasPermission: (permission?: PermissionInput) => boolean;
+}
+
+const grantAll: PermissionsContextValue = {
+  hasPermission: () => true,
+};
+
+const PermissionsContext = createContext<PermissionsContextValue>(grantAll);
+
+export type PermissionsProviderProps = PropsWithChildren<{
+  /**
+   * Explicit list of granted permissions. Ignored when `checker` is provided.
+   * If neither is set, all permissions are granted (standalone default).
+   */
+  permissions?: string[];
+  /**
+   * Custom permission resolver. Takes precedence over `permissions`.
+   */
+  checker?: PermissionChecker;
+}>;
+
+export const PermissionsProvider: FC<PermissionsProviderProps> = ({
+  children,
+  permissions,
+  checker,
+}) => {
+  const value = useMemo<PermissionsContextValue>(() => {
+    const check: PermissionChecker = checker
+      ? checker
+      : permissions
+        ? (permission) => permissions.includes(permission)
+        : () => true;
+
+    return {
+      hasPermission: (permission) => {
+        if (permission == null) {
+          return true;
+        }
+        const required = Array.isArray(permission) ? permission : [permission];
+        return required.every((entry) => check(entry));
+      },
+    };
+  }, [checker, permissions]);
+
+  return (
+    <PermissionsContext.Provider value={value}>
+      {children}
+    </PermissionsContext.Provider>
+  );
+};
+
+export const usePermissions = (): PermissionsContextValue =>
+  useContext(PermissionsContext);
+
+export type IfPermissionProps = PropsWithChildren<{
+  permission?: PermissionInput;
+  fallback?: ReactNode;
+}>;
+
+/**
+ * Renders its children only when the current user holds the given permission.
+ * Mirrors Angular's `*ocxIfPermission`.
+ */
+export const IfPermission: FC<IfPermissionProps> = ({
+  permission,
+  fallback = null,
+  children,
+}) => {
+  const { hasPermission } = usePermissions();
+  return <>{hasPermission(permission) ? children : fallback}</>;
+};
+
+export default usePermissions;

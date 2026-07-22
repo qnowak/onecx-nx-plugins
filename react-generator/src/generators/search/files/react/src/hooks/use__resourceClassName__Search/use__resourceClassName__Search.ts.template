@@ -1,0 +1,76 @@
+import { useCallback, useMemo, useState } from 'react';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+
+import { <%= serviceName %> } from '../../api/api';
+import {
+  type <%= resourceClassName %>SearchCriteria,
+  type <%= resourceClassName %>SearchRow,
+} from '../../pages/<%= featureFileName %>/<%= resourceFileName %>-search/<%= resourceFileName %>-search.types';
+
+// Query-key factory: models the <%= resourceClassName %> search domain.
+export const <%= resourcePropertyName %>SearchKeys = {
+  all: ['<%= resourceFileName %>'] as const,
+  search: (criteria: <%= resourceClassName %>SearchCriteria) =>
+    [...<%= resourcePropertyName %>SearchKeys.all, 'search', criteria] as const,
+};
+
+// Colocated query function.
+const fetch<%= resourceClassName %>SearchResults = async (
+  <%= resourcePropertyName %>Service: <%= serviceName %>,
+  criteria: <%= resourceClassName %>SearchCriteria
+): Promise<<%= resourceClassName %>SearchRow[]> => {
+  // ACTION S2: map the criteria to the generated search request
+  const response = await <%= resourcePropertyName %>Service.search<%= resource %>Items({
+    ...criteria,
+    pageNumber: 0,
+    pageSize: 100,
+  } as any);
+  return ((response.data as any).stream ?? []) as <%= resourceClassName %>SearchRow[];
+};
+
+export interface <%= resourceClassName %>SearchViewModel {
+  results: <%= resourceClassName %>SearchRow[];
+  isLoading: boolean;
+  isFetching: boolean;
+  isError: boolean;
+  error: Error | null;
+  isEmpty: boolean;
+  search: (criteria: <%= resourceClassName %>SearchCriteria) => void;
+  refetch: () => void;
+}
+
+export const use<%= resourceClassName %>Search = (): <%= resourceClassName %>SearchViewModel => {
+  const <%= resourcePropertyName %>Service = useMemo(() => new <%= serviceName %>(), []);
+  const [criteria, setCriteria] = useState<<%= resourceClassName %>SearchCriteria | null>(
+    null
+  );
+
+  const query = useQuery({
+    queryKey: criteria
+      ? <%= resourcePropertyName %>SearchKeys.search(criteria)
+      : <%= resourcePropertyName %>SearchKeys.all,
+    enabled: criteria !== null,
+    placeholderData: keepPreviousData,
+    staleTime: 30_000,
+    queryFn: () => fetch<%= resourceClassName %>SearchResults(<%= resourcePropertyName %>Service, criteria!),
+  });
+
+  const search = useCallback((next: <%= resourceClassName %>SearchCriteria) => {
+    setCriteria(next);
+  }, []);
+
+  const results = query.data ?? [];
+
+  return {
+    results,
+    isLoading: query.isLoading,
+    isFetching: query.isFetching,
+    isError: query.isError,
+    error: (query.error as Error) ?? null,
+    isEmpty: query.isSuccess && results.length === 0,
+    search,
+    refetch: () => {
+      void query.refetch();
+    },
+  };
+};

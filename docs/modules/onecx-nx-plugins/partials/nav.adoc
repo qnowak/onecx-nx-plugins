@@ -22,5 +22,14 @@
 ** xref:documentation:onecx-nx-plugins:generator/create-ngrx-page.adoc[Create NgRx Page]
 ** xref:documentation:onecx-nx-plugins:ngrx/pre-commit-validation.adoc[Pre-Commit Validation]
 
+** React Generators
+*** xref:documentation:onecx-nx-plugins:generator/create-react-search.adoc[Create React Search Page]
+**** xref:documentation:onecx-nx-plugins:generator/react-search/search-criteria.adoc[Search Criteria]
+**** xref:documentation:onecx-nx-plugins:generator/react-search/search-results.adoc[Search Results]
+**** xref:documentation:onecx-nx-plugins:generator/react-search/search-add-ons.adoc[Search Add-ons]
+**** xref:documentation:onecx-nx-plugins:generator/react-search/search-tests.adoc[Search Tests]
+**** xref:documentation:onecx-nx-plugins:generator/react-search/mock-api.adoc[Mock API]
+*** xref:documentation:onecx-nx-plugins:generator/create-react-page.adoc[Create React Page]
+
 ** xref:documentation:onecx-nx-plugins:generator/glossary.adoc[Glossary]
 ** xref:documentation:onecx-nx-plugins:generator/development.adoc[Development]

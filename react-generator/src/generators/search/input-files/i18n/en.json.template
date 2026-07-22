@@ -1,0 +1,35 @@
+{
+  "<%= resourceConstantName %>_SEARCH": {
+    "HEADER": "<%= resourceClassName %> Search",
+    "SUB_HEADER": "Find <%= resourceClassName %> items by criteria",
+    "ARIA_LABEL": "Page Header with Search",
+    "EMPTY_RESULTS": "No results.",
+    "BREADCRUMB": "Search",
+    "HEADER_ACTIONS": {
+      "EXPORT_ALL": "Export all",
+      "SHOW_CHART": "Show chart",
+      "HIDE_CHART": "Hide chart"
+    },
+    "RESULTS": {
+      "ID": "ID",
+      "ACTIONS": "Actions",
+      "COLUMN_GROUP": "Column Group",
+      "COLUMN_SETTINGS": "Column Settings",
+      "NAME": "Search Results"
+    },
+    "ERROR_MESSAGES": {
+      "SEARCH_RESULTS_LOADING_FAILED": "Search results could not be loaded."
+    },
+    "CRITERIA": {
+      "ACTIONS": {
+        "SEARCH": "Search",
+        "RESET": "Reset"
+      },
+      "CHANGE_ME": {
+        "LABEL": "Change Me",
+        "PLACEHOLDER": "To be replaced by actual search criteria",
+        "ARIA_LABEL": "Change Me"
+      }
+    }
+  }
+}

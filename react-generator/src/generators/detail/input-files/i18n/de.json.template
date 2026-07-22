@@ -1,0 +1,49 @@
+{
+  "<%= resourceConstantName %>_DETAILS": {
+    "HEADER": "<%= resourceClassName %> Details",
+    "SUB_HEADER": "Anzeigen von <%= resourceClassName %> Details",
+    "HELP_ARTICLE_ID": "Hilfeartikel",
+    "BREADCRUMB": "Details",
+    "ARIA_LABEL": "Seitenkopf mit Details",
+    "ERROR_MESSAGES":{
+      "DETAILS_LOADING_FAILED":"Details konnten nicht geladen werden."
+    },
+    "GENERAL": {
+      "BACK": "Zurück",
+      "MORE": "Mehr",
+      "EDIT": "Bearbeiten",
+      "DELETE": "Löschen",
+      "CANCEL": "Abbrechen",
+      "SAVE": "Speichern",
+      "YES": "Ja",
+      "NO": "Nein"
+    },
+    "FORM": {
+      "ID": "ID",
+      "NAME": "Seitenkopf mit Details",
+      "FORM_FIELDS": "ACTION D3: Add additional form field translation keys here"
+    },
+    "CANCEL": {
+      "HEADER": "Abbruch bestätigen",
+      "MESSAGE": "Bitte bestätigen Sie, dass Sie die Bearbeitung abbrechen und die Änderungen zurücksetzen möchten.",
+      "CONFIRM": "Bestätigen"
+    },
+    "UPDATE": {
+      "SUCCESS": "Speichern erfolgreich",
+      "ERROR": "Speichern fehlgeschlagen",
+      "FORM": {
+        "SAVE": "Speichern",
+        "CANCEL": "Abbrechen"
+      },
+      "HEADER": "<%= resourceClassName %> ändern"
+    },
+    "DELETE": {
+      "HEADER": "<%= resourceClassName %> löschen",
+      "MESSAGE": "Bitte bestätigen Sie, dass Sie <%= resourceClassName %> löschen möchten.",
+      "CONFIRM": "Bestätigen",
+      "CANCEL": "Abbrechen",
+      "SUCCESS": "<%= resourceClassName %> erfolgreich gelöscht",
+      "ERROR": "Konnte <%= resourceClassName %> nicht löschen"
+    }
+  }
+}

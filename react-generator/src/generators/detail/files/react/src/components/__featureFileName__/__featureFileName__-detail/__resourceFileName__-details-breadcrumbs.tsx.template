@@ -1,0 +1,34 @@
+interface <%= resourceClassName %>DetailsBreadcrumbsProps {
+  rootLabel: string;
+  currentLabel: string;
+  onRootClick: () => void;
+}
+
+export const <%= resourceClassName %>DetailsBreadcrumbs = ({
+  rootLabel,
+  currentLabel,
+  onRootClick,
+}: <%= resourceClassName %>DetailsBreadcrumbsProps) => {
+  return (
+    <div className="flex align-items-center text-sm text-600 py-2 px-4 border-bottom-1 surface-border">
+      <i
+        data-testid="home-icon"
+        className="pi pi-home mr-2 cursor-pointer"
+        onClick={onRootClick}
+      />
+
+      <span className="cursor-pointer" onClick={onRootClick}>
+        {rootLabel}
+      </span>
+
+      <i
+        data-testid="chevron-icon"
+        className="pi pi-chevron-right mx-2 text-xs"
+      />
+
+      <span>{currentLabel}</span>
+    </div>
+  );
+};
+
+export default <%= resourceClassName %>DetailsBreadcrumbs;

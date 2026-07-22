@@ -1,0 +1,35 @@
+{
+  "<%= resourceConstantName %>_SEARCH": {
+    "HEADER": "<%= resourceClassName %>-Suche",
+    "SUB_HEADER": "<%= resourceClassName %>-Elemente nach Kriterien suchen",
+    "ARIA_LABEL": "Seitenkopf mit Suche",
+    "EMPTY_RESULTS": "Keine Ergebnisse.",
+    "BREADCRUMB": "Suche",
+    "HEADER_ACTIONS": {
+      "EXPORT_ALL": "Alle exportieren",
+      "SHOW_CHART": "Diagramm anzeigen",
+      "HIDE_CHART": "Diagramm ausblenden"
+    },
+    "RESULTS": {
+      "ID": "ID",
+      "ACTIONS": "Aktionen",
+      "COLUMN_GROUP": "Spaltengruppe",
+      "COLUMN_SETTINGS": "Spalteneinstellungen",
+      "NAME": "Suchergebnisse"
+    },
+    "ERROR_MESSAGES": {
+      "SEARCH_RESULTS_LOADING_FAILED": "Suchergebnisse konnten nicht geladen werden."
+    },
+    "CRITERIA": {
+      "ACTIONS": {
+        "SEARCH": "Suchen",
+        "RESET": "Zurücksetzen"
+      },
+      "CHANGE_ME": {
+        "LABEL": "Change Me",
+        "PLACEHOLDER": "Durch echte Suchkriterien ersetzen",
+        "ARIA_LABEL": "Change Me"
+      }
+    }
+  }
+}

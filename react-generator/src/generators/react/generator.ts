@@ -7,7 +7,6 @@ import {
   names,
   Tree,
 } from '@nx/devkit';
-import { applicationGenerator } from '@nx/react';
 import { execSync } from 'child_process';
 import * as ora from 'ora';
 
@@ -76,6 +75,8 @@ export async function reactGenerator(
 
   const spinner = ora('Adding React').start();
   const directory = '.';
+
+  const { applicationGenerator } = await import('@nx/react');
 
   const applicationGeneratorCallback = await applicationGenerator(tree, {
     name: options.name,

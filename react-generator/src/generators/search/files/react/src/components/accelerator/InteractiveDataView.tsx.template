@@ -1,0 +1,260 @@
+import { Button } from 'primereact/button';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
+import { Dropdown } from 'primereact/dropdown';
+import { type ReactNode, useEffect, useRef } from 'react';
+
+import { usePermissions, type PermissionInput } from './usePermissions';
+
+export type InteractiveDataViewLayout = 'grid' | 'list' | 'table';
+
+export type InteractiveDataViewColumn<T extends object> = {
+  body?: (row: T) => ReactNode;
+  field: keyof T;
+  header: string;
+  sortable?: boolean;
+};
+
+export type InteractiveDataViewOption = {
+  label: string;
+  value: string;
+};
+
+export type InteractiveDataViewComponentState = {
+  layout?: InteractiveDataViewLayout;
+  selectedColumnGroup?: string;
+};
+
+export type InteractiveDataViewProps<T extends object> = {
+  actionColumnBody?: (row: T) => ReactNode;
+  actionColumnHeader?: string;
+  ariaLabel: string;
+  className?: string;
+  columnGroupLabel?: string;
+  columnGroupOptions?: InteractiveDataViewOption[];
+  columnGroupValue?: string;
+  columns: InteractiveDataViewColumn<T>[];
+  data: T[];
+  dataKey: string;
+  deleteLabel?: string;
+  emptyMessage: string;
+  editLabel?: string;
+  layout?: InteractiveDataViewLayout;
+  onComponentStateChange?: (state: InteractiveDataViewComponentState) => void;
+  onDeleteItem?: (row: T) => void;
+  onColumnGroupChange?: (value: string) => void;
+  onColumnSettingsClick?: () => void;
+  onEditItem?: (row: T) => void;
+  onLayoutChange?: (layout: InteractiveDataViewLayout) => void;
+  onViewItem?: (row: T) => void;
+  rows?: number;
+  rowsPerPageOptions?: number[];
+  settingsButtonAriaLabel?: string;
+  supportedViewLayouts?: InteractiveDataViewLayout[];
+  toolbarContentEnd?: ReactNode;
+  toolbarContentStart?: ReactNode;
+  viewLabel?: string;
+  /** Permission required to show the view row action. Omit to always show. */
+  viewPermission?: PermissionInput;
+  /** Permission required to show the edit row action. Omit to always show. */
+  editPermission?: PermissionInput;
+  /** Permission required to show the delete row action. Omit to always show. */
+  deletePermission?: PermissionInput;
+};
+
+export function InteractiveDataView<T extends object>({
+  actionColumnBody,
+  actionColumnHeader,
+  ariaLabel,
+  className,
+  columnGroupLabel,
+  columnGroupOptions,
+  columnGroupValue,
+  columns,
+  data,
+  dataKey,
+  deleteLabel = 'Delete',
+  emptyMessage,
+  editLabel = 'Edit',
+  layout = 'table',
+  onComponentStateChange,
+  onDeleteItem,
+  onColumnGroupChange,
+  onColumnSettingsClick,
+  onEditItem,
+  onLayoutChange,
+  onViewItem,
+  rows = 10,
+  rowsPerPageOptions = [10, 25, 50],
+  settingsButtonAriaLabel,
+  supportedViewLayouts = ['table'],
+  toolbarContentEnd,
+  toolbarContentStart,
+  viewLabel = 'View',
+  viewPermission,
+  editPermission,
+  deletePermission,
+}: InteractiveDataViewProps<T>) {
+  const { hasPermission } = usePermissions();
+  const componentStateChangeRef = useRef(onComponentStateChange);
+  const canView = !!onViewItem && hasPermission(viewPermission);
+  const canEdit = !!onEditItem && hasPermission(editPermission);
+  const canDelete = !!onDeleteItem && hasPermission(deletePermission);
+  const hasRowActions = canView || canEdit || canDelete;
+  const showColumnTools =
+    !!columnGroupLabel ||
+    !!columnGroupOptions?.length ||
+    supportedViewLayouts.length > 1 ||
+    !!settingsButtonAriaLabel ||
+    !!toolbarContentStart ||
+    !!toolbarContentEnd;
+
+  useEffect(() => {
+    componentStateChangeRef.current = onComponentStateChange;
+  }, [onComponentStateChange]);
+
+  useEffect(() => {
+    componentStateChangeRef.current?.({
+      layout,
+      selectedColumnGroup: columnGroupValue,
+    });
+  }, [columnGroupValue, layout]);
+
+  return (
+    <section className={className}>
+      {showColumnTools ? (
+        <div className="p-3 border-bottom-1 surface-border" id="interactiveDataViewHeader">
+          <div className="flex flex-wrap justify-content-between align-items-center py-1 gap-2">
+            <div className="flex flex-wrap justify-content-start align-items-center gap-2">
+              {toolbarContentStart}
+
+              {supportedViewLayouts.length > 1 ? (
+                <div className="flex flex-wrap justify-content-start align-items-center gap-2">
+                  {supportedViewLayouts.map((layoutOption) => (
+                    <Button
+                      key={layoutOption}
+                      type="button"
+                      label={layoutOption}
+                      severity={layoutOption === layout ? undefined : 'secondary'}
+                      outlined={layoutOption !== layout}
+                      className="p-button-sm"
+                      onClick={() => onLayoutChange?.(layoutOption)}
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+
+            <div className="flex flex-wrap justify-content-between align-items-end gap-2">
+              {columnGroupLabel && columnGroupOptions?.length ? (
+                <div className="flex flex-column gap-1 align-bottom">
+                  <label
+                    htmlFor="interactive-data-view-column-group"
+                    className="text-sm text-600"
+                  >
+                    {columnGroupLabel}
+                  </label>
+                  <Dropdown
+                    id="interactive-data-view-column-group"
+                    value={columnGroupValue}
+                    options={columnGroupOptions}
+                    optionLabel="label"
+                    optionValue="value"
+                    onChange={(event) => onColumnGroupChange?.(event.value as string)}
+                    className="w-full md:w-12rem"
+                  />
+                </div>
+              ) : null}
+
+              {settingsButtonAriaLabel ? (
+                <Button
+                  icon="pi pi-cog"
+                  aria-label={settingsButtonAriaLabel}
+                  className="p-button-sm align-self-end h-3rem"
+                  onClick={onColumnSettingsClick}
+                />
+              ) : null}
+
+              {toolbarContentEnd}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      <div className="p-3" id="interactiveDataViewContent">
+        <DataTable
+          value={data}
+          emptyMessage={emptyMessage}
+          paginator
+          rows={rows}
+          rowsPerPageOptions={rowsPerPageOptions}
+          dataKey={dataKey}
+          aria-label={ariaLabel}
+        >
+          {columns.map((column) => (
+            <Column
+              key={String(column.field)}
+              field={String(column.field)}
+              header={column.header}
+              sortable={column.sortable}
+              body={column.body}
+            />
+          ))}
+
+          {actionColumnHeader ? (
+            <Column
+              header={actionColumnHeader}
+              body={(rowData: T) => {
+                if (actionColumnBody) {
+                  return actionColumnBody(rowData);
+                }
+
+                if (!hasRowActions) {
+                  return null;
+                }
+
+                return (
+                  <div className="flex gap-2">
+                    {canView ? (
+                      <Button
+                        type="button"
+                        icon="pi pi-eye"
+                        text
+                        rounded
+                        aria-label={viewLabel}
+                        onClick={() => onViewItem?.(rowData)}
+                      />
+                    ) : null}
+                    {canEdit ? (
+                      <Button
+                        type="button"
+                        icon="pi pi-pencil"
+                        text
+                        rounded
+                        aria-label={editLabel}
+                        onClick={() => onEditItem?.(rowData)}
+                      />
+                    ) : null}
+                    {canDelete ? (
+                      <Button
+                        type="button"
+                        icon="pi pi-trash"
+                        text
+                        rounded
+                        severity="danger"
+                        aria-label={deleteLabel}
+                        onClick={() => onDeleteItem?.(rowData)}
+                      />
+                    ) : null}
+                  </div>
+                );
+              }}
+            />
+          ) : null}
+        </DataTable>
+      </div>
+    </section>
+  );
+}
+
+export default InteractiveDataView;

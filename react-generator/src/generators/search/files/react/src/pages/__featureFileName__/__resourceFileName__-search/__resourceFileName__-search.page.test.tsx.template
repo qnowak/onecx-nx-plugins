@@ -1,0 +1,95 @@
+import { type ReactElement } from 'react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+  }),
+}));
+
+const renderWithClient = (ui: ReactElement) => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+    },
+  });
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+  );
+};
+
+const search<%= resource %>Items = jest.fn();
+
+jest.mock('../../../api/api', () => {
+  class Mock<%= serviceName %> {
+    constructor() {
+      return { search<%= resource %>Items } as any;
+    }
+  }
+  return {
+    <%= serviceName %>: Mock<%= serviceName %>,
+  };
+});
+
+import { <%= resourceClassName %>SearchPage } from './<%= resourceFileName %>-search.page';
+
+describe('<%= resourceClassName %>SearchPage', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    search<%= resource %>Items.mockResolvedValue({
+      data: {
+        stream: [{ id: 'T-1001', modificationCount: 0 }],
+      },
+    });
+  });
+
+  it('renders page header', () => {
+    renderWithClient(<<%= resourceClassName %>SearchPage />);
+
+    expect(screen.getByText('<%= resourceConstantName %>_SEARCH.HEADER')).toBeTruthy();
+  });
+
+  it('loads results from the api on mount', async () => {
+    renderWithClient(<<%= resourceClassName %>SearchPage />);
+
+    await waitFor(() => {
+      expect(search<%= resource %>Items).toHaveBeenCalled();
+      expect(screen.getByText('T-1001')).toBeTruthy();
+    });
+  });
+
+  it('searches with the current criteria', async () => {
+    renderWithClient(<<%= resourceClassName %>SearchPage />);
+
+    await waitFor(() => {
+      expect(search<%= resource %>Items).toHaveBeenCalledTimes(1);
+    });
+
+    fireEvent.change(
+      screen.getByLabelText('<%= resourceConstantName %>_SEARCH.CRITERIA.CHANGE_ME.ARIA_LABEL'),
+      {
+        target: { value: 'beta' },
+      }
+    );
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: '<%= resourceConstantName %>_SEARCH.CRITERIA.ACTIONS.SEARCH',
+      })
+    );
+
+    await waitFor(() => {
+      expect(search<%= resource %>Items).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it('renders the header actions overflow menu trigger', () => {
+    renderWithClient(<<%= resourceClassName %>SearchPage />);
+
+    expect(
+      screen.getByRole('button', {
+        name: 'More actions',
+      })
+    ).toBeTruthy();
+  });
+});

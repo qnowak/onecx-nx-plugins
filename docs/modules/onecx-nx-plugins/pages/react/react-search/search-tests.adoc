@@ -1,0 +1,33 @@
+ifdef::env-site[]
+include::partial$_attributes.adoc[]
+endif::[]
+:imagesdir: ../../../images
+
+= Configure Search Tests
+
+The React search generator creates basic tests next to the generated code:
+
+* `+src/pages/<feature>/<resource>-search/<resource>-search.page.test.tsx+` +
+  Renders the search page and verifies the header and the search/reset actions.
+* `+src/hooks/use<Resource>Search/use<Resource>Search.test.tsx+` +
+  Exercises the search hook (criteria handling, results, loading/error states).
+
+These tests cover the *generated* state. As soon as you adapt the criteria (xref:./search-criteria.adoc[Search Criteria]) and the result columns (xref:./search-results.adoc[Search Results]), you must update the tests accordingly.
+
+Steps to adapt the tests::
+
+. Update the page test when you add/remove criteria input fields or change the header actions.
+. Update the hook test when you change the criteria-to-request mapping (xref:./mock-api.adoc[Map the API]).
+. Replace any reference to the `+changeMe+` placeholder with your actual criteria and columns.
+
+.Run the tests
+[source, bash]
+----
+npm run test
+----
+
+[NOTE]
+The generated tests use React Testing Library and rely on the translation keys (e.g. `+<RESOURCE>_SEARCH.CRITERIA.ACTIONS.SEARCH+`). Keep the test selectors in sync with the translation keys you adjust in xref:./search-add-ons.adoc[Search Add-ons].
+
+[TIP]
+Search your IDE for `*ACTION S*` to find every place that still needs adaptation before the tests reflect your real entity.

@@ -1,0 +1,128 @@
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { <%= resourceClassName %>DetailsHeader } from './<%= resourceFileName %>-details-header';
+
+vi.mock('../../../components/accelerator', () => ({
+  PageHeader: ({ header, subheader, breadcrumbHome, breadcrumbItems, actions, children }: any) => (
+    <div data-testid="page-header">
+      <h1 data-testid="header">{header}</h1>
+      <p data-testid="subheader">{subheader}</p>
+      <div data-testid="breadcrumb-home">{breadcrumbHome?.label}</div>
+      <div data-testid="breadcrumb-items">{breadcrumbItems?.map((item: any) => item.label).join(', ')}</div>
+      <div data-testid="actions">{actions?.map((action: any) => action.label).join(', ')}</div>
+      <div data-testid="children">{children}</div>
+    </div>
+  ),
+}));
+
+describe('<%= resourceClassName %>DetailsHeader', () => {
+  const mockOnBack = vi.fn();
+  const mockActionCallback = vi.fn();
+  const mockActions = [
+    {
+      labelKey: 'Edit',
+      icon: 'pi pi-pencil',
+      disabled: false,
+      actionCallback: mockActionCallback,
+    },
+    {
+      labelKey: 'Delete',
+      icon: 'pi pi-trash',
+      disabled: false,
+      severity: 'danger' as const,
+      actionCallback: mockActionCallback,
+    },
+  ];
+
+  beforeEach(() => {
+    mockOnBack.mockClear();
+    mockActionCallback.mockClear();
+  });
+
+  it('should render header with title and subtitle', () => {
+    render(
+      <<%= resourceClassName %>DetailsHeader
+        title="Test Details"
+        subtitle="View and edit information"
+        breadcrumbLabel="Test Feature"
+        breadcrumbCurrentLabel="Test Details"
+        infoLabel="ID"
+        infoValue="123"
+        actions={[]}
+        onBack={mockOnBack}
+      />
+    );
+
+    expect(screen.getByTestId('header')).toHaveTextContent('Test Details');
+    expect(screen.getByTestId('subheader')).toHaveTextContent('View and edit information');
+  });
+
+  it('should render breadcrumb labels', () => {
+    render(
+      <<%= resourceClassName %>DetailsHeader
+        title="Test Details"
+        subtitle="View and edit information"
+        breadcrumbLabel="Test Feature"
+        breadcrumbCurrentLabel="Test Details"
+        infoLabel="ID"
+        infoValue="123"
+        actions={[]}
+        onBack={mockOnBack}
+      />
+    );
+
+    expect(screen.getByTestId('breadcrumb-items')).toHaveTextContent('Test Details');
+  });
+
+  it('should render info label and value in children', () => {
+    render(
+      <<%= resourceClassName %>DetailsHeader
+        title="Test Details"
+        subtitle="View and edit information"
+        breadcrumbLabel="Test Feature"
+        breadcrumbCurrentLabel="Test Details"
+        infoLabel="ID"
+        infoValue="123"
+        actions={[]}
+        onBack={mockOnBack}
+      />
+    );
+
+    expect(screen.getByTestId('children')).toHaveTextContent('ID');
+    expect(screen.getByTestId('children')).toHaveTextContent('123');
+  });
+
+  it('should render action buttons', () => {
+    render(
+      <<%= resourceClassName %>DetailsHeader
+        title="Test Details"
+        subtitle="View and edit information"
+        breadcrumbLabel="Test Feature"
+        breadcrumbCurrentLabel="Test Details"
+        infoLabel="ID"
+        infoValue="123"
+        actions={mockActions}
+        onBack={mockOnBack}
+      />
+    );
+
+    expect(screen.getByTestId('actions')).toHaveTextContent('Edit, Delete');
+  });
+
+  it('should render without actions when actions array is empty', () => {
+    render(
+      <<%= resourceClassName %>DetailsHeader
+        title="Test Details"
+        subtitle="View and edit information"
+        breadcrumbLabel="Test Feature"
+        breadcrumbCurrentLabel="Test Details"
+        infoLabel="ID"
+        infoValue="123"
+        actions={[]}
+        onBack={mockOnBack}
+      />
+    );
+
+    expect(screen.getByTestId('actions')).toHaveTextContent('');
+  });
+});

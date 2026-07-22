@@ -1,0 +1,61 @@
+import { InputText } from 'primereact/inputtext';
+import type { <%= resourceClassName %>DetailsFormData } from '../../../pages/<%= featureFileName %>/<%= resourceFileName %>-details/<%= resourceFileName %>-details.types';
+
+interface <%= resourceClassName %>DetailsFormProps {
+  details: {
+    id: string;
+    modificationCount: number;
+  };
+  formData: <%= resourceClassName %>DetailsFormData;
+  editMode: boolean;
+  onChange: (field: keyof <%= resourceClassName %>DetailsFormData, value: string | number) => void;
+}
+
+export const <%= resourceClassName %>DetailsForm = ({
+  details,
+  formData,
+  editMode,
+  onChange,
+}: <%= resourceClassName %>DetailsFormProps) => {
+  return (
+    <div className="p-3">
+      <div className="mb-3">
+        <label
+          htmlFor="id"
+          className="block mb-1 text-xs font-bold text-900"
+        >
+          ID
+        </label>
+
+        <InputText
+          id="id"
+          disabled
+          value={details.id ?? ''}
+          className="w-full"
+        />
+      </div>
+
+      {/* ACTION D2: Add additional form fields here */}
+      <div className="mb-3">
+        <label
+          htmlFor="modificationCount"
+          className="block mb-1 text-xs font-bold text-900 mt-3"
+        >
+          Modification Count
+        </label>
+
+        <InputText
+          id="modificationCount"
+          disabled={!editMode}
+          value={String(formData.modificationCount ?? '')}
+          onChange={(e) =>
+            onChange('modificationCount', parseInt(e.target.value, 10) || 0)
+          }
+          className="w-full"
+        />
+      </div>
+    </div>
+  );
+};
+
+export default <%= resourceClassName %>DetailsForm;

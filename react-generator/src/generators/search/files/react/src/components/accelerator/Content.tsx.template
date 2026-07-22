@@ -1,0 +1,31 @@
+import { type FC, type PropsWithChildren } from 'react';
+
+export type ContentProps = PropsWithChildren<{
+  className?: string;
+  styleClass?: string;
+  title?: string;
+}>;
+
+export const Content: FC<ContentProps> = ({
+  children,
+  className,
+  styleClass,
+  title = '',
+}) => {
+  const mergedClassName = [
+    'surface-card p-3 shadow-1 border-round mb-4',
+    styleClass,
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return (
+    <section className={mergedClassName}>
+      {title ? <p className="font-medium text-lg mt-0 mb-3">{title}</p> : null}
+      {children}
+    </section>
+  );
+};
+
+export default Content;

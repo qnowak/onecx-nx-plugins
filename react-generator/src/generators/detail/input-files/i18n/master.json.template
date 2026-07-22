@@ -1,0 +1,36 @@
+{
+  "<%= resourceConstantName %>_DETAILS": {
+    "BREADCRUMB": "<%= resourceClassName %> Details",
+    "GENERAL": {
+      "BACK": "Back",
+      <%_ if(editMode){ _%>
+      "EDIT": "Edit",
+      "CANCEL": "Cancel",
+      "SAVE": "Save",
+      <%_ } _%>
+      <%_ if(allowDelete){ _%>
+      "DELETE": "Delete",
+      <%_ } _%>
+      "MORE": "More",
+      "YES": "Yes",
+      "NO": "No"
+    },
+    <%_ if(editMode){ _%>
+    "CANCEL": {
+      "HEADER": "Confirm Cancellation",
+      "MESSAGE": "You have unsaved changes. Are you sure you want to cancel?"
+    },
+    <%_ } _%>
+    <%_ if(allowDelete){ _%>
+    "DELETE": {
+      "HEADER": "Confirm Deletion",
+      "MESSAGE": "Are you sure you want to delete this item?"
+    },
+    <%_ } _%>
+    "FORM": {
+      "ID": "ID",
+      "MODIFICATION_COUNT": "Modification Count",
+      "FORM_FIELDS": "ACTION D3: Add additional form field translation keys here"
+    }
+  }
+}

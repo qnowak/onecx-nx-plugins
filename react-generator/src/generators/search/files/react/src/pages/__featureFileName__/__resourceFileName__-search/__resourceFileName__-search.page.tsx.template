@@ -1,0 +1,121 @@
+import { type FC, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Message } from 'primereact/message';
+import { ProgressSpinner } from 'primereact/progressspinner';
+
+import {
+  Content,
+  ContentContainer,
+  type InteractiveDataViewComponentState,
+  type InteractiveDataViewLayout,
+  PortalPage,
+} from '../../../components/accelerator';
+import { initial<%= resourceClassName %>SearchCriteria } from './<%= resourceFileName %>-search.types';
+import { use<%= resourceClassName %>Search } from '../../../hooks/use<%= resourceClassName %>Search/use<%= resourceClassName %>Search';
+import <%= resourceClassName %>SearchHeaderSection from '../../../components/<%= resourceFileName %>/<%= resourceFileName %>-search-header-section.component';
+import <%= resourceClassName %>SearchResultsSection from '../../../components/<%= resourceFileName %>/<%= resourceFileName %>-search-results-section.component';
+
+export const <%= resourceClassName %>SearchPage: FC = () => {
+  const { t } = useTranslation();
+
+  const [criteria, setCriteria] = useState(initial<%= resourceClassName %>SearchCriteria);
+  const [columnGroup, setColumnGroup] = useState('default');
+  const [layout, setLayout] = useState<InteractiveDataViewLayout>('table');
+  const [chartVisible, setChartVisible] = useState(false);
+  const [, setInteractiveDataViewState] = useState<
+    InteractiveDataViewComponentState
+  >({
+    layout: 'table',
+    selectedColumnGroup: 'default',
+  });
+
+  const { results, isLoading, isFetching, isError, search } = use<%= resourceClassName %>Search();
+
+  useEffect(() => {
+    search(initial<%= resourceClassName %>SearchCriteria);
+  }, [search]);
+
+  const handleSearch = () => {
+    search(criteria);
+  };
+
+  const handleReset = () => {
+    setCriteria(initial<%= resourceClassName %>SearchCriteria);
+    search(initial<%= resourceClassName %>SearchCriteria);
+  };
+
+  const handleExportAll = () => {
+    // ACTION S10: implement CSV export of the current results
+    if (typeof window !== 'undefined') {
+      window.alert('Export all is not implemented yet.');
+    }
+  };
+
+  const handleToggleChart = () => {
+    // ACTION S9: render the results chart; this only toggles visibility for now
+    setChartVisible((visible) => !visible);
+  };
+
+  const handleInteractiveDataViewStateChange = (
+    state: InteractiveDataViewComponentState
+  ) => {
+    setInteractiveDataViewState(state);
+  };
+
+  return (
+    // ACTION S13: the page is gated on the SEARCH permission; the `standalone` flag skips gating for standalone apps
+    <PortalPage
+      <% if (!standalone) { %>permission="<%= resourceConstantName %>#SEARCH"<% } %>
+      ariaLabel={t('<%= resourceConstantName %>_SEARCH.ARIA_LABEL')}
+    >
+      <<%= resourceClassName %>SearchHeaderSection
+        criteria={criteria}
+        onCriteriaChange={setCriteria}
+        onReset={handleReset}
+        onSearch={handleSearch}
+        chartVisible={chartVisible}
+        onExportAll={handleExportAll}
+        onToggleChart={handleToggleChart}
+        t={t}
+      />
+
+      <ContentContainer layout="horizontal">
+        <Content className="w-full">
+          {isError ? (
+            <Message
+              severity="error"
+              text={t('<%= resourceConstantName %>_SEARCH.ERROR_MESSAGES.SEARCH_RESULTS_LOADING_FAILED')}
+              className="w-full mb-3"
+            />
+          ) : null}
+
+          {isLoading ? (
+            <div className="flex justify-content-center p-5">
+              <ProgressSpinner />
+            </div>
+          ) : (
+            <>
+              {/* Background refetch indicator: previous results stay visible (keepPreviousData) */}
+              {isFetching ? (
+                <div className="flex justify-content-center mb-2">
+                  <ProgressSpinner style={{ width: '2rem', height: '2rem' }} />
+                </div>
+              ) : null}
+              <<%= resourceClassName %>SearchResultsSection
+                columnGroup={columnGroup}
+                layout={layout}
+                onInteractiveDataViewStateChange={handleInteractiveDataViewStateChange}
+                onColumnGroupChange={setColumnGroup}
+                onLayoutChange={setLayout}
+                results={results}
+                t={t}
+              />
+            </>
+          )}
+        </Content>
+      </ContentContainer>
+    </PortalPage>
+  );
+};
+
+export default <%= resourceClassName %>SearchPage;

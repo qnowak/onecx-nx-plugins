@@ -1,0 +1,49 @@
+import { create } from 'zustand';
+import type { <%= resourceClassName %>Details, <%= resourceClassName %>DetailsFormData } from './<%= resourceFileName %>-details.types';
+
+interface <%= resourceClassName %>DetailsState {
+  <%_ if(editMode){ _%>
+  editMode: boolean;
+  formData: <%= resourceClassName %>DetailsFormData;
+  hasUnsavedChanges: boolean;
+  showCancelConfirm: boolean;
+  setEditMode: (editMode: boolean) => void;
+  setFormData: (formData: <%= resourceClassName %>DetailsFormData) => void;
+  setHasUnsavedChanges: (hasUnsavedChanges: boolean) => void;
+  setShowCancelConfirm: (showCancelConfirm: boolean) => void;
+  resetFormData: (details: <%= resourceClassName %>DetailsFormData) => void;
+  <%_ } _%>
+  <%_ if(allowDelete){ _%>
+  showDeleteConfirm: boolean;
+  setShowDeleteConfirm: (showDeleteConfirm: boolean) => void;
+  <%_ } _%>
+}
+
+export const use<%= resourceClassName %>DetailsStore = create<<%= resourceClassName %>DetailsState>((set) => ({
+  <%_ if(editMode){ _%>
+  editMode: false,
+  formData: {
+    id: '',
+    modificationCount: 0,
+    // ACTION D1: Add additional form field initializations here
+  },
+  hasUnsavedChanges: false,
+  showCancelConfirm: false,
+  setEditMode: (editMode) => set({ editMode }),
+  setFormData: (formData) => set({ formData }),
+  setHasUnsavedChanges: (hasUnsavedChanges) => set({ hasUnsavedChanges }),
+  setShowCancelConfirm: (showCancelConfirm) => set({ showCancelConfirm }),
+  resetFormData: (details) => set({
+    formData: {
+      id: details.id,
+      modificationCount: details.modificationCount,
+      // ACTION D4: Add additional form field initializations here
+    },
+    hasUnsavedChanges: false,
+  }),
+  <%_ } _%>
+  <%_ if(allowDelete){ _%>
+  showDeleteConfirm: false,
+  setShowDeleteConfirm: (showDeleteConfirm) => set({ showDeleteConfirm }),
+  <%_ } _%>
+}));

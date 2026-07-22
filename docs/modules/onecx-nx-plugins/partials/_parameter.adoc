@@ -22,3 +22,29 @@
     E.g. `+book+` for a resource entity named "Book".
     If not specified, the generator will use the feature name as resource name by default.
 # end::resource[]
+# tag::featureName[]
+  _<feature>_::
+    The name of the feature to which the generated page or component is added. +
+    Passed as the first positional argument. E.g. `+book+` for a feature named "Book".
+# end::featureName[]
+# tag::customizeNamingForAPI[]
+  _customizeNamingForAPI_::
+    Optional (interactive prompt). If you answer *Yes*, you can customize the resource and the
+    generated API names (resource, search request and search response). +
+    If you answer *No*, the generator derives these names from the feature name (fastest path).
+# end::customizeNamingForAPI[]
+# tag::pageName[]
+  _pageName_::
+    The name of the page to generate. +
+    E.g. `+Book+` results in a `+BookPage+` component. Defaults to `+Page+`.
+# end::pageName[]
+# tag::pageTitle[]
+  _pageTitle_::
+    The title rendered inside the generated page. +
+    E.g. `+Books+`. Defaults to `+Page Title+`.
+# end::pageTitle[]
+# tag::standalone[]
+  _--standalone_::
+    Optional. If set, the generated page is not gated on a permission. +
+    Use this for standalone apps that do not run inside the OneCX permission context.
+# end::standalone[]

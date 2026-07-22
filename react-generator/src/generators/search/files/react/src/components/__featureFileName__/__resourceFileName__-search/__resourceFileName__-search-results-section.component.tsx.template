@@ -1,0 +1,75 @@
+import { type FC } from 'react';
+import { type useTranslation } from 'react-i18next';
+
+import {
+  InteractiveDataView,
+  type InteractiveDataViewComponentState,
+  type InteractiveDataViewLayout,
+} from '../accelerator';
+import {
+  <%= resourcePropertyName %>SearchColumns,
+  type <%= resourceClassName %>SearchRow,
+} from '../../pages/<%= featureFileName %>/<%= resourceFileName %>-search/<%= resourceFileName %>-search.types';
+
+const SEARCH_PREFIX = '<%= resourceConstantName %>_SEARCH';
+const COLUMN_GROUP_OPTIONS = [{ label: 'Default', value: 'default' }];
+// Row actions are gated on these permissions (granted by default until a real PermissionsProvider is wired at the app root).
+const PERMISSION_RESOURCE = '<%= resourceConstantName %>';
+
+type Translate = ReturnType<typeof useTranslation>['t'];
+
+export type <%= resourceClassName %>SearchResultsSectionProps = {
+  columnGroup: string;
+  layout: InteractiveDataViewLayout;
+  onInteractiveDataViewStateChange: (
+    state: InteractiveDataViewComponentState
+  ) => void;
+  onColumnGroupChange: (value: string) => void;
+  onLayoutChange: (layout: InteractiveDataViewLayout) => void;
+  onViewItem?: (item: <%= resourceClassName %>SearchRow) => void;
+  results: <%= resourceClassName %>SearchRow[];
+  t: Translate;
+};
+
+export const <%= resourceClassName %>SearchResultsSection: FC<<%= resourceClassName %>SearchResultsSectionProps> = ({
+  columnGroup,
+  layout,
+  onInteractiveDataViewStateChange,
+  onColumnGroupChange,
+  onLayoutChange,
+  onViewItem,
+  results,
+  t,
+}) => (
+  <InteractiveDataView
+    actionColumnHeader={
+      onViewItem ? t(`${SEARCH_PREFIX}.RESULTS.ACTIONS`) : undefined
+    }
+    ariaLabel={t(`${SEARCH_PREFIX}.RESULTS.NAME`)}
+    columnGroupLabel={
+      t(`${SEARCH_PREFIX}.RESULTS.COLUMN_GROUP`) || 'Column group'
+    }
+    columnGroupOptions={COLUMN_GROUP_OPTIONS}
+    columnGroupValue={columnGroup}
+    /* ACTION S6: Define/adjust result columns */
+    columns={<%= resourcePropertyName %>SearchColumns.map((column) => ({
+      field: column.field,
+      header: t(column.headerKey),
+      sortable: true,
+    }))}
+    data={results}
+    dataKey="id"
+    onComponentStateChange={onInteractiveDataViewStateChange}
+    emptyMessage={t(`${SEARCH_PREFIX}.EMPTY_RESULTS`)}
+    layout={layout}
+    onColumnGroupChange={onColumnGroupChange}
+    onLayoutChange={onLayoutChange}
+    onViewItem={onViewItem}
+    settingsButtonAriaLabel={t(`${SEARCH_PREFIX}.RESULTS.COLUMN_SETTINGS`)}
+    supportedViewLayouts={['table']}
+    viewLabel="View"
+    viewPermission={`${PERMISSION_RESOURCE}#VIEW`}
+  />
+);
+
+export default <%= resourceClassName %>SearchResultsSection;

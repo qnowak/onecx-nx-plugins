@@ -1,0 +1,138 @@
+import { Button } from 'primereact/button';
+import { type FC, type KeyboardEvent, type PropsWithChildren, type ReactNode } from 'react';
+
+import { PageHeader, type Action, type BreadcrumbItem } from './PageHeader';
+
+/**
+ * React equivalent of the OneCX Angular `ocx-search-header`, which wraps
+ * `ocx-page-header`. This composes `PageHeader` for the breadcrumb/title/action
+ * chrome (including permission-aware actions) and renders the search criteria
+ * plus search/reset controls as its content.
+ */
+export type SearchHeaderAction = Action;
+
+export type SearchHeaderProps = PropsWithChildren<{
+  actions?: SearchHeaderAction[];
+  ariaLabel?: string;
+  breadcrumbHome?: BreadcrumbItem;
+  breadcrumbItems?: BreadcrumbItem[];
+  cardClassName?: string;
+  header: string;
+  headerIconClassName?: string;
+  loading?: boolean;
+  manualBreadcrumbs?: boolean;
+  onReset?: () => void;
+  onSearch: () => void;
+  resetButtonClassName?: string;
+  resetIcon?: string;
+  resetLabel?: string;
+  /** Reverse the order so Search comes before Reset (OneCX portal config). */
+  searchButtonsReversed?: boolean;
+  searchButtonClassName?: string;
+  searchIcon?: string;
+  searchLabel: string;
+  subheader?: string;
+  additionalToolbarContent?: ReactNode;
+  additionalToolbarContentLeft?: ReactNode;
+}>;
+
+const isSearchTrigger = (event: KeyboardEvent<HTMLElement>) => {
+  if (event.key !== 'Enter') {
+    return false;
+  }
+
+  const target = event.target as HTMLElement | null;
+  return target?.tagName !== 'TEXTAREA';
+};
+
+export const SearchHeader: FC<SearchHeaderProps> = ({
+  actions = [],
+  ariaLabel,
+  breadcrumbHome,
+  breadcrumbItems = [],
+  cardClassName,
+  children,
+  header,
+  headerIconClassName,
+  loading,
+  manualBreadcrumbs,
+  onReset,
+  onSearch,
+  resetButtonClassName = 'p-button-sm',
+  resetIcon = 'pi pi-eraser',
+  resetLabel,
+  searchButtonsReversed = false,
+  searchButtonClassName = 'p-button-sm',
+  searchIcon = 'pi pi-search',
+  searchLabel,
+  subheader,
+  additionalToolbarContent,
+  additionalToolbarContentLeft,
+}) => {
+  const resetButton = onReset ? (
+    <Button
+      key="reset"
+      icon={resetIcon}
+      label={resetLabel}
+      className={resetButtonClassName}
+      onClick={onReset}
+    />
+  ) : null;
+
+  const searchButton = (
+    <Button
+      key="search"
+      icon={searchIcon}
+      label={searchLabel}
+      className={searchButtonClassName}
+      onClick={onSearch}
+    />
+  );
+
+  return (
+    <PageHeader
+      header={header}
+      subheader={subheader}
+      ariaLabel={ariaLabel}
+      actions={actions}
+      loading={loading}
+      manualBreadcrumbs={manualBreadcrumbs}
+      breadcrumbHome={breadcrumbHome}
+      breadcrumbItems={breadcrumbItems}
+      cardClassName={cardClassName}
+      figureIconClassName={headerIconClassName}
+      additionalToolbarContent={additionalToolbarContent}
+      additionalToolbarContentLeft={additionalToolbarContentLeft}
+    >
+      <div
+        className="flex row-gap-3 column-gap-6 flex-wrap align-items-center"
+        onKeyDown={(event) => {
+          if (!isSearchTrigger(event)) {
+            return;
+          }
+
+          event.preventDefault();
+          onSearch();
+        }}
+      >
+        <section
+          className="flex flex-wrap align-items-center gap-3 flex-1"
+          aria-label="Search Criteria"
+        >
+          {children}
+        </section>
+
+        <section
+          className="flex flex-wrap gap-2 flex-row md:ml-auto"
+          aria-label="Search controls"
+        >
+          {searchButtonsReversed
+            ? [searchButton, resetButton]
+            : [resetButton, searchButton]}
+        </section>
+      </div>
+    </PageHeader>
+  );
+};
+
+export default SearchHeader;

@@ -1,0 +1,111 @@
+ifdef::env-site[]
+include::partial$_attributes.adoc[]
+endif::[]
+:imagesdir: ../../../images
+
+= Map the API and Prepare Mock Data
+
+The React search page fetches its data through a generated `+<Resource>Api+`, called from the `+use<Resource>Search+` hook. This page describes how to map the search criteria to the API request, how the search endpoint is defined in the OpenAPI file, and how to provide mock data while no real backend is available.
+
+
+[#action-s2]
+== ACTION S2 - Map criteria to the search request
+
+The hook contains a colocated query function that calls the generated API service. Adjust the mapping so that the criteria object matches the generated `+Search<Resource>Request+`.
+
+[horizontal]
+Directory:: `+src/hooks/use<Resource>Search+`
+File::      `+use<Resource>Search.ts+`
+
+.ACTION S2 in `+use<Resource>Search.ts+`
+[%collapsible]
+====
+[source, typescript]
+----
+const fetch<Resource>SearchResults = async (
+  <resource>Service: <Resource>Api,
+  criteria: <Resource>SearchCriteria
+): Promise<<Resource>SearchRow[]> => {
+  // ACTION S2: map the criteria to the generated search request
+  const response = await <resource>Service.search<Resource>Items({
+    ...criteria,
+    pageNumber: 0,
+    pageSize: 100,
+  } as any);
+  return ((response.data as any).stream ?? []) as <Resource>SearchRow[];
+};
+----
+Replace the spread `+...criteria+` with an explicit mapping to the fields of your `+Search<Resource>Request+`, and remove the `+as any+` casts once the request type matches.
+====
+
+
+== Generated OpenAPI Endpoint
+
+During generation, a search endpoint is added to the BFF OpenAPI specification. Adapt the request/response schemas to your entity, then regenerate the typed API client.
+
+[horizontal]
+Directory:: `+src/assets/api+`
+File::      `+openapi-bff.yaml+`
+
+.Generated search endpoint (excerpt)
+[%collapsible]
+====
+[source, yaml]
+----
+  /<resource>s/search:
+    post:
+      operationId: search<Resource>Items
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Search<Resource>Request'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Search<Resource>Response'
+----
+Add your entity properties to the `+Search<Resource>Request+` (criteria) and to the `+<Resource>+` schema (result row).
+====
+
+[IMPORTANT]
+====
+After adjusting the OpenAPI specification, regenerate the typed API client so the changes are reflected in `+<Resource>Api+`.
+====
+
+.Generate the API client code
+[source, bash]
+----
+npm run apigen
+----
+
+
+== Mock Server with Node.js
+
+While no real backend is available, you can provide simulated data with a small {node_js_link} server. This example assumes an entity called "*Book*" and serves data on the `+/books/search+` endpoint. Save the file e.g. as `+bookstore-mock-server.js+`.
+
+.Simulated data example via node mock server
+[%collapsible]
+====
+ifdef::env-site[]
+include::partial$_mock-server.adoc[]
+endif::[]
+====
+
+.Start the server with the following command
+[source,bash]
+----
+node bookstore-mock-server.js
+----
+
+The server starts and listens for incoming requests on port 3000.
+
+// TODO: capture screenshot of the mock server serving the React search endpoint
+.Example output when the server is running and a request is made to the search endpoint
+image::react_mock_server_running.png[]
+
+
+== Using the Mock API
+Point your application's BFF base URL to the mock server (e.g. `\http://localhost:3000`) instead of the real backend, so the generated `+<Resource>Api+` calls the mock endpoints. Adjust the configured BFF/proxy target of your React UI app accordingly.

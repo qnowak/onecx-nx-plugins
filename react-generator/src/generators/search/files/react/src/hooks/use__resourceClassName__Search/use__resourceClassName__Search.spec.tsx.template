@@ -1,0 +1,110 @@
+import { type ReactNode } from 'react';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+import { use<%= resourceClassName %>Search } from './use<%= resourceClassName %>Search';
+import { <%= serviceName %> } from '../../api/api';
+
+jest.mock('../../api/api', () => {
+  const mockInstance = {
+    search<%= resource %>Items: jest.fn(),
+  };
+  class Mock<%= serviceName %> {
+    constructor() {
+      return mockInstance as any;
+    }
+  }
+  return {
+    <%= serviceName %>: Mock<%= serviceName %>,
+  };
+});
+
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+    },
+  });
+  return ({ children }: { children: ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+};
+
+describe('use<%= resourceClassName %>Search', () => {
+  let mockService: any;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockService = new <%= serviceName %>();
+  });
+
+  it('does not fetch until a search is triggered', () => {
+    const { result } = renderHook(() => use<%= resourceClassName %>Search(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(result.current.results).toEqual([]);
+    expect(mockService.search<%= resource %>Items).not.toHaveBeenCalled();
+  });
+
+  it('loads results on search', async () => {
+    mockService.search<%= resource %>Items.mockResolvedValue({
+      data: {
+        stream: [{ id: 'test-id', modificationCount: 0 }],
+      },
+    });
+
+    const { result } = renderHook(() => use<%= resourceClassName %>Search(), {
+      wrapper: createWrapper(),
+    });
+
+    act(() => {
+      result.current.search({ changeMe: '' } as any);
+    });
+
+    await waitFor(() => {
+      expect(result.current.results).toHaveLength(1);
+      expect(result.current.isFetching).toBe(false);
+    });
+  });
+
+  it('reports an empty result set', async () => {
+    mockService.search<%= resource %>Items.mockResolvedValue({
+      data: {
+        stream: [],
+      },
+    });
+
+    const { result } = renderHook(() => use<%= resourceClassName %>Search(), {
+      wrapper: createWrapper(),
+    });
+
+    act(() => {
+      result.current.search({ changeMe: '' } as any);
+    });
+
+    await waitFor(() => {
+      expect(result.current.isEmpty).toBe(true);
+      expect(result.current.results).toEqual([]);
+    });
+  });
+
+  it('handles search errors', async () => {
+    mockService.search<%= resource %>Items.mockRejectedValue(
+      new Error('Failed to load')
+    );
+
+    const { result } = renderHook(() => use<%= resourceClassName %>Search(), {
+      wrapper: createWrapper(),
+    });
+
+    act(() => {
+      result.current.search({ changeMe: '' } as any);
+    });
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true);
+      expect(result.current.error?.message).toBe('Failed to load');
+    });
+  });
+});

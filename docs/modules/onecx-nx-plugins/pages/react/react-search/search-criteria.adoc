@@ -1,0 +1,157 @@
+ifdef::env-site[]
+include::partial$_attributes.adoc[]
+endif::[]
+:imagesdir: ../../../images
+
+= Configure Search Criteria
+
+After generating the base of the React search page, you can configure search criteria to allow users to filter existing data. +
+The search criteria must be added in two places: the *TypeScript types* that define the criteria object and the *header section component* that renders the input fields.
+
+Steps to add Search Criteria::
+
+. Adjust the `+<Resource>SearchCriteria+` interface and its initial values in the `+<resource>-search.types.ts+` file.
+. Add the matching input field(s) to the `+<resource>-search-header-section.component.tsx+` file.
+. Add the corresponding translation keys (see xref:./search-add-ons.adoc[Search Add-ons]).
+. Map the criteria to the generated API request (see xref:./mock-api.adoc[Map the API]).
+
+[NOTE]
+====
+The generated template ships with a single placeholder criteria named `+changeMe+`. Replace it with the actual criteria of your entity.
+====
+
+
+[#action-s2]
+== ACTION S2
+
+Define the Search Criteria (types)::
+The `+<Resource>SearchCriteria+` interface describes the shape of the criteria object. Adjust its members and the initial values to match the fields users should be able to filter on.
+
+[discrete]
+=== Template: Generated criteria types
+
+[horizontal]
+Directory:: `+src/pages/<feature>/<resource>-search+`
+File::      `+<resource>-search.types.ts+`
+
+.ACTION S2 in `+<resource>-search.types.ts+`
+[%collapsible]
+====
+[source, typescript]
+----
+// ACTION S2: Define/adjust the search criteria
+export interface <Resource>SearchCriteria {
+  changeMe: string;
+}
+
+// ACTION S2: Adjust the initial search criteria values
+export const initial<Resource>SearchCriteria: <Resource>SearchCriteria = {
+  changeMe: '',
+};
+----
+Where *changeMe* is the placeholder criteria to be replaced.
+====
+
+'''
+
+[discrete]
+=== Example: BookSearchCriteria
+
+[horizontal]
+Directory:: `+bookstore/src/pages/book/book-search+`
+File::      `+book-search.types.ts+`
+
+.Example: Adjustments in `+book-search.types.ts+`
+[%collapsible]
+====
+[source, typescript]
+----
+export interface BookSearchCriteria {
+  bookTitle: string;
+}
+
+export const initialBookSearchCriteria: BookSearchCriteria = {
+  bookTitle: '',
+};
+----
+Where *bookTitle* is the criteria the user can filter on.
+====
+
+
+[#action-s3]
+== ACTION S3
+
+Render the Search Criteria fields::
+To make the criteria usable, add a corresponding input field for each criteria in the header section component. The generated template marks the place with `+{/* ACTION S3: Specify search criteria fields */}+`.
+
+[discrete]
+=== Template: Generated criteria field
+
+[horizontal]
+Directory:: `+src/components/<feature>+`
+File::      `+<resource>-search-header-section.component.tsx+`
+
+.ACTION S3 in `+<resource>-search-header-section.component.tsx+`
+[%collapsible]
+====
+[source, tsx]
+----
+    {/* ACTION S3: Specify search criteria fields */}
+    <div className="w-full md:w-15rem md:flex-none">
+      <FloatLabel>
+        <InputText
+          id="<resource>-search-change-me"
+          value={criteria.changeMe}
+          placeholder={t(`${SEARCH_PREFIX}.CRITERIA.CHANGE_ME.PLACEHOLDER`)}
+          aria-label={t(`${SEARCH_PREFIX}.CRITERIA.CHANGE_ME.ARIA_LABEL`)}
+          className="w-full"
+          onChange={(event) =>
+            onCriteriaChange({ ...criteria, changeMe: event.target.value })
+          }
+        />
+        <label htmlFor="<resource>-search-change-me">
+          {t(`${SEARCH_PREFIX}.CRITERIA.CHANGE_ME.LABEL`)}
+        </label>
+      </FloatLabel>
+    </div>
+----
+Where *changeMe* is the placeholder criteria field to be replaced.
+====
+
+'''
+
+[discrete]
+=== Example: bookTitle input field
+
+[horizontal]
+Directory:: `+bookstore/src/components/book+`
+File::      `+book-search-header-section.component.tsx+`
+
+.Example: Adjustments in `+book-search-header-section.component.tsx+`
+[%collapsible]
+====
+[source, tsx]
+----
+    <div className="w-full md:w-15rem md:flex-none">
+      <FloatLabel>
+        <InputText
+          id="book-search-book-title"
+          value={criteria.bookTitle}
+          placeholder={t(`${SEARCH_PREFIX}.CRITERIA.BOOK_TITLE.PLACEHOLDER`)}
+          aria-label={t(`${SEARCH_PREFIX}.CRITERIA.BOOK_TITLE.ARIA_LABEL`)}
+          className="w-full"
+          onChange={(event) =>
+            onCriteriaChange({ ...criteria, bookTitle: event.target.value })
+          }
+        />
+        <label htmlFor="book-search-book-title">
+          {t(`${SEARCH_PREFIX}.CRITERIA.BOOK_TITLE.LABEL`)}
+        </label>
+      </FloatLabel>
+    </div>
+----
+Where *bookTitle* matches the criteria defined in the types file.
+====
+
+[TIP]
+Keep the criteria keys in the types file, the field `+onChange+` handlers and the translation keys in sync. After adjusting the criteria, continue with mapping them to the API request in xref:./mock-api.adoc[Map the API].

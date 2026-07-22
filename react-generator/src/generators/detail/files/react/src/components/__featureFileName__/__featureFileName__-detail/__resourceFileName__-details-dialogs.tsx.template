@@ -1,0 +1,62 @@
+import { ConfirmDialog } from 'primereact/confirmdialog';
+import { useTranslation } from 'react-i18next';
+
+interface <%= resourceClassName %>DetailsDialogsProps {
+  <%_ if(editMode){ _%>
+  showCancelConfirm: boolean;
+  onConfirmCancel: () => void;
+  onRejectCancel: () => void;
+  <%_ } _%>
+  <%_ if(allowDelete){ _%>
+  showDeleteConfirm: boolean;
+  onConfirmDelete: () => void;
+  onRejectDelete: () => void;
+  <%_ } _%>
+}
+
+export const <%= resourceClassName %>DetailsDialogs = ({
+  <%_ if(editMode){ _%>
+  showCancelConfirm,
+  onConfirmCancel,
+  onRejectCancel,
+  <%_ } _%>
+  <%_ if(allowDelete){ _%>
+  showDeleteConfirm,
+  onConfirmDelete,
+  onRejectDelete,
+  <%_ } _%>
+}: <%= resourceClassName %>DetailsDialogsProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <%_ if(editMode){ _%>
+      <ConfirmDialog
+        visible={showCancelConfirm}
+        message={t('<%= resourceConstantName %>_DETAILS.CANCEL.MESSAGE')}
+        header={t('<%= resourceConstantName %>_DETAILS.CANCEL.HEADER')}
+        icon="pi pi-exclamation-triangle"
+        accept={onConfirmCancel}
+        reject={onRejectCancel}
+        acceptLabel={t('<%= resourceConstantName %>_DETAILS.GENERAL.YES')}
+        rejectLabel={t('<%= resourceConstantName %>_DETAILS.GENERAL.NO')}
+      />
+      <%_ } _%>
+
+      <%_ if(allowDelete){ _%>
+      <ConfirmDialog
+        visible={showDeleteConfirm}
+        message={t('<%= resourceConstantName %>_DETAILS.DELETE.MESSAGE')}
+        header={t('<%= resourceConstantName %>_DETAILS.DELETE.HEADER')}
+        icon="pi pi-exclamation-triangle"
+        accept={onConfirmDelete}
+        reject={onRejectDelete}
+        acceptLabel={t('<%= resourceConstantName %>_DETAILS.GENERAL.YES')}
+        rejectLabel={t('<%= resourceConstantName %>_DETAILS.GENERAL.NO')}
+      />
+      <%_ } _%>
+    </>
+  );
+};
+
+export default <%= resourceClassName %>DetailsDialogs;

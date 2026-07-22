@@ -1,0 +1,441 @@
+ifdef::env-site[]
+include::partial$_attributes.adoc[]
+endif::[]
+:imagesdir: ../../../images
+
+= Configure Detail View (React)
+
+After generating the base of the detail component, you can configure the detail view to display and manage the details of the specified resource/entity. By default, the generator creates data structures used in GET request to fetch the details of the resource/entity and display them in the detail view.
+
+[NOTE]
+====
+This section covers the React implementation. For Angular, see xref:../../generator/details/detail-properties.adoc[Configure Detail View (Angular)].
+====
+
+
+[#action-d1]
+== ACTION D1
+
+Add Detail Properties in TypeScript Component::
+To display additional properties in the detail view, you need to adapt the TypeScript component of the detail view.
+
+[horizontal]
+Directory:: `bookstore/src/pages/book/book-details`
+File::      `book-details.store.ts`
+[horizontal]
+Directory:: `bookstore/src/pages/book/book-details`
+File::      `book-details.types.ts`
+
+[discrete]
+=== Example: Generated Details in Book Component
+
+.Original `+book-details.store.ts+`
+[%collapsible]
+====
+[source, javascript]
+----
+export const useBookDetailsStore = create<BookDetailsState>((set) => ({
+  editMode: false,
+  formData: {
+    id: "",
+    modificationCount: 0,
+    // ACTION D1: Add additional form field initializations here
+  },
+  hasUnsavedChanges: false,
+  showCancelConfirm: false,
+  setEditMode: (editMode) => set({ editMode }),
+  setFormData: (formData) => set({ formData }),
+  setHasUnsavedChanges: (hasUnsavedChanges) => set({ hasUnsavedChanges }),
+  setShowCancelConfirm: (showCancelConfirm) => set({ showCancelConfirm }),
+  resetFormData: (details) =>
+    set({
+      formData: {
+        id: details.id,
+        modificationCount: details.modificationCount,
+        // ACTION D4: Add additional form field initializations here
+      },
+      hasUnsavedChanges: false,
+    }),
+  showDeleteConfirm: false,
+  setShowDeleteConfirm: (showDeleteConfirm) => set({ showDeleteConfirm }),
+}));
+----
+====
+
+.Original `+book-details.types.ts+`
+[%collapsible]
+====
+[source, javascript]
+----
+export interface BookDetails {
+  id: string;
+  modificationCount: number;
+  // ACTION D1: Add additional detail properties here
+}
+
+export interface BookDetailsFormData {
+  id: string;
+  modificationCount: number;
+  // ACTION D1: Add additional form field properties here
+}
+
+----
+====
+
+'''
+
+[discrete]
+=== Example: Book Details in Book Component
+
+.Book details in `+book-details.store.ts+`
+[%collapsible]
+====
+[source, javascript]
+----
+export const useBookDetailsStore = create<BookDetailsState>((set) => ({
+  editMode: false,
+  formData: {
+    id: "",
+    modificationCount: 0,
+    bookTitle: "",
+    bookType: "",
+    // ACTION D1: Add additional form field initializations here
+  },
+  hasUnsavedChanges: false,
+  showCancelConfirm: false,
+  setEditMode: (editMode) => set({ editMode }),
+  setFormData: (formData) => set({ formData }),
+  setHasUnsavedChanges: (hasUnsavedChanges) => set({ hasUnsavedChanges }),
+  setShowCancelConfirm: (showCancelConfirm) => set({ showCancelConfirm }),
+  resetFormData: (details) =>
+    set({
+      formData: {
+        id: details.id,
+        modificationCount: details.modificationCount,
+        bookTitle: details.bookTitle,
+        bookType: details.bookType,
+        // ACTION D4: Add additional form field initializations here
+      },
+      hasUnsavedChanges: false,
+    }),
+  showDeleteConfirm: false,
+  setShowDeleteConfirm: (showDeleteConfirm) => set({ showDeleteConfirm }),
+}));
+----
+Where *bookTitle* and *bookType* are properties of the book entity to be displayed and managed in the detail view.
+====
+
+
+[#action-d2]
+== ACTION D2
+
+Add Detail Properties in JSX::
+To display additional properties in the detail view, you need to adapt the JSX of the detail view.
+
+[horizontal]
+Directory:: `bookstore/src/components/book/book-detail`
+File::      `book-details-form.tsx`
+
+[discrete]
+=== Example: Generated Book Details Form in JSX
+
+.Original `+book-details-form.tsx+`
+[%collapsible]
+====
+[source, javascript]
+----
+...
+      {/* ACTION D2: Add additional form fields here */}
+      <div className="mb-3">
+        <label
+          htmlFor="modificationCount"
+          className="block mb-1 text-xs font-bold text-900 mt-3"
+        >
+          Modification Count
+        </label>
+
+        <InputText
+          id="modificationCount"
+          disabled={!editMode}
+          value={String(formData.modificationCount ?? '')}
+          onChange={(e) =>
+            onChange('modificationCount', parseInt(e.target.value, 10) || 0)
+          }
+          className="w-full"
+        />
+      </div>
+...
+----
+====
+
+'''
+
+[discrete]
+=== Example: Book Details Form in JSX
+
+.Book details in `+book-details-form.tsx+`
+[%collapsible]
+====
+[source, javascript]
+----
+      <div className="mb-3">
+        <label
+          htmlFor="bookTitle"
+          className="block mb-1 text-xs font-bold text-900 mt-3"
+        >
+          Book Title
+        </label>
+
+        <InputText
+          id="bookTitle"
+          disabled={!editMode}
+          value={formData.bookTitle ?? ''}
+          onChange={(e) => onChange('bookTitle', e.target.value)}
+          className="w-full"
+        />
+      </div>
+
+      <div className="mb-3">
+        <label
+          htmlFor="bookType"
+          className="block mb-1 text-xs font-bold text-900 mt-3"
+        >
+          Book Type
+        </label>
+
+        <InputText
+          id="bookType"
+          disabled={!editMode}
+          value={formData.bookType ?? ''}
+          onChange={(e) => onChange('bookType', e.target.value)}
+          className="w-full"
+        />
+      </div>
+----
+Where *bookTitle* and *bookType* are properties of the book entity to be displayed and managed in the detail view.
+====
+
+
+[#action-D3]
+== ACTION D3
+
+Add Translations::
+Ensure that all necessary translations are added. +
+More details in {onecx_ui_translations_ref}[Multi-Language].
+
+[discrete]
+=== Template: Generated Translations
+
+[horizontal]
+Directory:: `<root-of-ui-app>/src/assets/i18n`
+Files::      `de.json`, `en.json`
+
+.Adjust translations in `+en.json+`
+[%collapsible]
+====
+[source, json]
+----
+  "BOOK_DETAILS": {
+    "HEADER": "Book Details",
+    "SUB_HEADER": "Display of Book Details",
+    "HELP_ARTICLE_ID": "Help Article",
+    "BREADCRUMB": "Details",
+    "ARIA_LABEL": "Page Header with Details",
+    "ERROR_MESSAGES": {
+      "DETAILS_LOADING_FAILED": "Loading details failed."
+    },
+    "GENERAL": {
+      "BACK": "Back",
+      "MORE": "More",
+      "EDIT": "Edit",
+      "DELETE": "Delete",
+      "CANCEL": "Cancel",
+      "SAVE": "Save"
+    },
+    "FORM": {
+      "ID": "ID",
+      "NAME": "Page Header with Details",
+      "FORM_FIELDS": "ACTION D3: Add additional form field translation keys here"
+    },
+    "CANCEL": {
+      "HEADER": "Confirm cancellation",
+      "MESSAGE": "Please confirm that you want to cancel editing and reset changes.",
+      "CONFIRM": "Confirm"
+    },
+    "UPDATE": {
+      "SUCCESS": "Update successful",
+      "ERROR": "Update failed",
+      "FORM": {
+        "SAVE": "Save",
+        "CANCEL": "Cancel"
+      },
+      "HEADER": "Update Book"
+    },
+    "DELETE": {
+      "HEADER": "Delete Book",
+      "MESSAGE": "Please confirm that you want to delete this Book item.",
+      "CONFIRM": "Confirm",
+      "CANCEL": "Cancel",
+      "SUCCESS": "Book deleted successfully",
+      "ERROR": "Could not delete Book"
+    }
+  }
+----
+The `+FORM_FIELDS+` entry in the `FORM` section marks where to add a translation key for each additional form field. It is a placeholder tagged with `+ACTION D3+`: replace it with your own keys and adapt the default values to your application.
+====
+
+'''
+
+[discrete]
+=== Example
+
+[horizontal]
+Directory:: `bookstore/src/assets/i18n`
+Files::      `de.json`, `en.json`
+
+.Example: Translations in `+en.json+`
+[%collapsible]
+====
+[source, json]
+----
+  "BOOK_DETAILS": {
+    "HEADER": "Book Details",
+    "SUB_HEADER": "Display of Book Details",
+    "HELP_ARTICLE_ID": "Help Article",
+    "BREADCRUMB": "Details",
+    "ARIA_LABEL": "Page Header with Details",
+    "ERROR_MESSAGES": {
+      "DETAILS_LOADING_FAILED": "Loading details failed."
+    },
+    "GENERAL": {
+      "BACK": "Back",
+      "MORE": "More",
+      "EDIT": "Edit",
+      "DELETE": "Delete",
+      "CANCEL": "Cancel",
+      "SAVE": "Save"
+    },
+    "FORM": {
+      "ID": "ID",
+      "NAME": "Page Header with Details",
+      "BOOK_TITLE": "Book Title",
+      "BOOK_TYPE": "Book Type"
+    },
+    "CANCEL": {
+      "HEADER": "Confirm cancellation",
+      "MESSAGE": "Please confirm that you want to cancel editing and reset changes.",
+      "CONFIRM": "Confirm"
+    },
+    "UPDATE": {
+      "SUCCESS": "Update successful",
+      "ERROR": "Update failed",
+      "FORM": {
+        "SAVE": "Save",
+        "CANCEL": "Cancel"
+      },
+      "HEADER": "Update Book"
+    },
+    "DELETE": {
+      "HEADER": "Delete Book",
+      "MESSAGE": "Please confirm that you want to delete this Book item.",
+      "CONFIRM": "Confirm",
+      "CANCEL": "Cancel",
+      "SUCCESS": "Book deleted successfully",
+      "ERROR": "Could not delete Book"
+    }
+  },
+----
+Where *BOOK_TITLE* and *BOOK_TYPE* are the translation keys for the additional form fields added in ACTION D1 and D2.
+====
+
+.Example: Translations in `+de.json+`
+[%collapsible]
+====
+[source, json]
+----
+  "BOOK_DETAILS": {
+    "HEADER": "Buchdetails",
+    "SUB_HEADER": "Anzeige von Buchdetails",
+    "HELP_ARTICLE_ID": "Hilfeartikel",
+    "BREADCRUMB": "Details",
+    "ARIA_LABEL": "Seitenkopf mit Details",
+    "ERROR_MESSAGES": {
+      "DETAILS_LOADING_FAILED": "Details konnten nicht geladen werden."
+    },
+    "GENERAL": {
+      "BACK": "Zurück",
+      "MORE": "Mehr",
+      "EDIT": "Bearbeiten",
+      "DELETE": "Löschen",
+      "CANCEL": "Abbrechen",
+      "SAVE": "Speichern"
+    },
+    "FORM": {
+      "ID": "ID",
+      "NAME": "Seitenkopf mit Details",
+      "BOOK_TITLE": "Buchtitel",
+      "BOOK_TYPE": "Buchtyp"
+    },
+    "CANCEL": {
+      "HEADER": "Abbruch bestätigen",
+      "MESSAGE": "Bitte bestätigen Sie, dass Sie die Bearbeitung abbrechen und die Änderungen zurücksetzen möchten.",
+      "CONFIRM": "Bestätigen"
+    },
+    "UPDATE": {
+      "SUCCESS": "Speichern erfolgreich",
+      "ERROR": "Speichern fehlgeschlagen",
+      "FORM": {
+        "SAVE": "Speichern",
+        "CANCEL": "Abbrechen"
+      },
+      "HEADER": "Buch ändern"
+    },
+    "DELETE": {
+      "HEADER": "Buch löschen",
+      "MESSAGE": "Bitte bestätigen Sie, dass Sie das Buch löschen möchten.",
+      "CONFIRM": "Bestätigen",
+      "CANCEL": "Abbrechen",
+      "SUCCESS": "Buch erfolgreich gelöscht",
+      "ERROR": "Konnte Buch nicht löschen"
+    }
+  },
+----
+====
+
+
+[#action-d4]
+== ACTION D4
+
+Add Form Field Initializations::
+When using edit mode, you need to ensure all form fields are properly initialized from the details object. This is done in both the store and the page component.
+
+[horizontal]
+Directory:: `<root-of-ui-app>/src/pages/<feature>/<resource>-details`
+File::      `<resource>-details.store.ts`
+File::      `<resource>-details.page.tsx`
+
+.ACTION D4 in `+<resource>-details.store.ts+`
+[%collapsible]
+====
+[source, javascript]
+----
+formData: {
+  id: details.id,
+  modificationCount: details.modificationCount,
+  // ACTION D4: Add additional form field initializations here
+},
+----
+====
+
+.ACTION D4 in `+<resource>-details.page.tsx+`
+[%collapsible]
+====
+[source, javascript]
+----
+resetFormData({
+  id: details.id,
+  modificationCount: details.modificationCount,
+  // ACTION D4: Add additional form field initializations here
+});
+----
+====

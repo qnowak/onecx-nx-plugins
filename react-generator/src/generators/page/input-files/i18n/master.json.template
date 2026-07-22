@@ -1,0 +1,7 @@
+{
+  "<%= pageConstantName %>": {
+    "HEADER": "ACTION: ADD TRANSLATION",
+    "SUB_HEADER": "ACTION: ADD TRANSLATION",
+    "ARIA_LABEL": "ACTION: ADD TRANSLATION"
+  }
+}

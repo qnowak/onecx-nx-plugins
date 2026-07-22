@@ -1,0 +1,23 @@
+import { render, screen } from '@testing-library/react';
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+  }),
+}));
+
+import { <%= pageClassName %>Page } from './<%= pageFileName %>.page';
+
+describe('<%= pageClassName %>Page', () => {
+  it('renders the page header', () => {
+    render(<<%= pageClassName %>Page />);
+
+    expect(screen.getByText('<%= pageConstantName %>.HEADER')).toBeTruthy();
+  });
+
+  it('renders the page title', () => {
+    render(<<%= pageClassName %>Page />);
+
+    expect(screen.getByText('<%= pageTitle %>')).toBeTruthy();
+  });
+});

@@ -1,0 +1,28 @@
+import { type <%= resourceClassName %> } from '../../../api';
+
+// ACTION S2: Define/adjust the search criteria
+export interface <%= resourceClassName %>SearchCriteria {
+  changeMe: string;
+}
+
+// Row shape shown in the results table (aligned to the generated <%= resourceClassName %> model)
+export type <%= resourceClassName %>SearchRow = <%= resourceClassName %>;
+
+export interface SearchColumn<T extends object> {
+  field: keyof T;
+  headerKey: string;
+}
+
+// ACTION S2: Adjust the initial search criteria values
+export const initial<%= resourceClassName %>SearchCriteria: <%= resourceClassName %>SearchCriteria = {
+  changeMe: '',
+};
+
+// ACTION S6: Define search results columns
+export const <%= resourcePropertyName %>SearchColumns: SearchColumn<<%= resourceClassName %>SearchRow>[] = [
+  {
+    field: 'id',
+    headerKey: '<%= resourceConstantName %>_SEARCH.RESULTS.ID',
+  },
+  // ACTION S6: add more columns to match your entity
+];

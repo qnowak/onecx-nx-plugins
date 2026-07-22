@@ -1,0 +1,72 @@
+import { PageHeader, type Action, type BreadcrumbItem } from "../../../components/accelerator";
+
+export interface <%= resourceClassName %>DetailsHeaderAction {
+  labelKey: string;
+  icon?: string;
+  disabled?: boolean;
+  severity?: 'secondary' | 'danger' | 'success' | 'info' | 'warning';
+  actionCallback: () => void;
+}
+
+interface <%= resourceClassName %>DetailsHeaderProps {
+  title: string;
+  subtitle: string;
+  breadcrumbLabel: string;
+  breadcrumbCurrentLabel: string;
+  infoLabel: string;
+  infoValue: string;
+  actions: <%= resourceClassName %>DetailsHeaderAction[];
+  onBack: () => void;
+}
+
+const mapSeverityToOutlined = (severity?: string): boolean => {
+  if (severity === 'secondary') return true;
+  return false;
+};
+
+export const <%= resourceClassName %>DetailsHeader = ({
+  title,
+  subtitle,
+  breadcrumbCurrentLabel,
+  infoLabel,
+  infoValue,
+  actions,
+  onBack,
+}: <%= resourceClassName %>DetailsHeaderProps) => {
+  const breadcrumbHome: BreadcrumbItem = {
+    icon: 'pi pi-home',
+    command: onBack,
+  };
+
+  const breadcrumbItems: BreadcrumbItem[] = [
+    {
+      label: breadcrumbCurrentLabel,
+    },
+  ];
+
+  const mappedActions: Action[] = actions.map((action) => ({
+    id: action.labelKey,
+    label: action.labelKey,
+    icon: action.icon,
+    disabled: action.disabled,
+    outlined: mapSeverityToOutlined(action.severity),
+    onClick: action.actionCallback,
+  }));
+
+  return (
+    <PageHeader
+      header={title}
+      subheader={subtitle}
+      breadcrumbHome={breadcrumbHome}
+      breadcrumbItems={breadcrumbItems}
+      actions={mappedActions}
+    >
+      <div className="flex align-items-center gap-2">
+        <span className="text-600 text-sm">{infoLabel}</span>
+        <span className="font-semibold">{infoValue}</span>
+      </div>
+    </PageHeader>
+  );
+};
+
+export default <%= resourceClassName %>DetailsHeader;

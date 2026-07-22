@@ -1,0 +1,21 @@
+ifdef::env-site[]
+include::partial$_attributes.adoc[]
+endif::[]
+:imagesdir: ../../images
+
+= React Generators
+
+In addition to the Angular generators, the OneCX App Generator provides generators for *React* UI applications. They follow the same iterative approach: generate a part, then adapt the places marked with *ACTION*.
+
+The current working directory must be the root of an existing OneCX React UI Application.
+
+== Available Generators
+
+* xref:./create-react-feature.adoc[Create a Feature Module (React)] +
+  Generates a feature entry page and registers feature-level routing.
+* xref:./create-react-details.adoc[Create a Detail Component (React)] +
+  Generates details page, hook/store, and related UI components for a resource.
+* xref:./create-react-search.adoc[Create a React Search Page] +
+  A data-driven search page with criteria, results table, header actions and API integration.
+* xref:./create-react-page.adoc[Create a React Page] +
+  A minimal, ready-to-use page with header and content area.

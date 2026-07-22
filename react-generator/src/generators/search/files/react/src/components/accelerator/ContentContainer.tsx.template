@@ -1,0 +1,48 @@
+import { type FC, type PropsWithChildren } from 'react';
+
+type ContentContainerBreakpoint = 'sm' | 'md' | 'lg' | 'xl';
+type ContentContainerLayout = 'vertical' | 'horizontal';
+
+export type ContentContainerProps = PropsWithChildren<{
+  breakpoint?: ContentContainerBreakpoint;
+  className?: string;
+  layout?: ContentContainerLayout;
+  styleClass?: string;
+}>;
+
+const BREAKPOINT_CLASSNAME: Record<ContentContainerBreakpoint, string> = {
+  sm: 'sm:flex-row',
+  md: 'md:flex-row',
+  lg: 'lg:flex-row',
+  xl: 'xl:flex-row',
+};
+
+export const ContentContainer: FC<ContentContainerProps> = ({
+  breakpoint = 'md',
+  children,
+  className,
+  layout = 'horizontal',
+  styleClass,
+}) => {
+  const customClasses = [styleClass, className].filter(Boolean).join(' ');
+  const hasGapClass = /(^|\s)gap-\S+/.test(customClasses);
+  const hasDirectionClass =
+    /(^|\s)flex-row(\s|$)|(^|\s)flex-row-reverse(\s|$)|(^|\s)flex-column-reverse(\s|$)/.test(
+      customClasses
+    );
+
+  const mergedClassName = [
+    'flex align-items-stretch',
+    hasGapClass ? '' : 'gap-3',
+    hasDirectionClass ? '' : 'flex-column',
+    layout === 'horizontal' ? BREAKPOINT_CLASSNAME[breakpoint] : '',
+    styleClass,
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return <div className={mergedClassName}>{children}</div>;
+};
+
+export default ContentContainer;

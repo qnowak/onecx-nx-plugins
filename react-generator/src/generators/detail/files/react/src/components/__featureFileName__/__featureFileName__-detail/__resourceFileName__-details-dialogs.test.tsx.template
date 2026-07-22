@@ -1,0 +1,122 @@
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { <%= resourceClassName %>DetailsDialogs } from './<%= resourceFileName %>-details-dialogs';
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+  }),
+}));
+
+describe('<%= resourceClassName %>DetailsDialogs', () => {
+  <%_ if(editMode){ _%>
+  const mockOnConfirmCancel = vi.fn();
+  const mockOnRejectCancel = vi.fn();
+  <%_ } _%>
+  <%_ if(allowDelete){ _%>
+  const mockOnConfirmDelete = vi.fn();
+  const mockOnRejectDelete = vi.fn();
+  <%_ } _%>
+
+  beforeEach(() => {
+    <%_ if(editMode){ _%>
+    mockOnConfirmCancel.mockClear();
+    mockOnRejectCancel.mockClear();
+    <%_ } _%>
+    <%_ if(allowDelete){ _%>
+    mockOnConfirmDelete.mockClear();
+    mockOnRejectDelete.mockClear();
+    <%_ } _%>
+  });
+
+  it('should render without crashing', () => {
+    render(
+      <<%= resourceClassName %>DetailsDialogs
+        <%_ if(editMode){ _%>
+        showCancelConfirm={false}
+        onConfirmCancel={mockOnConfirmCancel}
+        onRejectCancel={mockOnRejectCancel}
+        <%_ } _%>
+        <%_ if(allowDelete){ _%>
+        showDeleteConfirm={false}
+        onConfirmDelete={mockOnConfirmDelete}
+        onRejectDelete={mockOnRejectDelete}
+        <%_ } _%>
+      />
+    );
+  });
+
+  <%_ if(editMode){ _%>
+  it('should render cancel confirm dialog when showCancelConfirm is true', () => {
+    render(
+      <<%= resourceClassName %>DetailsDialogs
+        showCancelConfirm={true}
+        onConfirmCancel={mockOnConfirmCancel}
+        onRejectCancel={mockOnRejectCancel}
+        <%_ if(allowDelete){ _%>
+        showDeleteConfirm={false}
+        onConfirmDelete={mockOnConfirmDelete}
+        onRejectDelete={mockOnRejectDelete}
+        <%_ } _%>
+      />
+    );
+
+    expect(screen.getByText('<%= resourceConstantName %>_DETAILS.CANCEL.HEADER')).toBeInTheDocument();
+    expect(screen.getByText('<%= resourceConstantName %>_DETAILS.CANCEL.MESSAGE')).toBeInTheDocument();
+  });
+
+  it('should not render cancel confirm dialog when showCancelConfirm is false', () => {
+    render(
+      <<%= resourceClassName %>DetailsDialogs
+        showCancelConfirm={false}
+        onConfirmCancel={mockOnConfirmCancel}
+        onRejectCancel={mockOnRejectCancel}
+        <%_ if(allowDelete){ _%>
+        showDeleteConfirm={false}
+        onConfirmDelete={mockOnConfirmDelete}
+        onRejectDelete={mockOnRejectDelete}
+        <%_ } _%>
+      />
+    );
+
+    expect(screen.queryByText('<%= resourceConstantName %>_DETAILS.CANCEL.HEADER')).not.toBeInTheDocument();
+  });
+  <%_ } _%>
+
+  <%_ if(allowDelete){ _%>
+  it('should render delete confirm dialog when showDeleteConfirm is true', () => {
+    render(
+      <<%= resourceClassName %>DetailsDialogs
+        <%_ if(editMode){ _%>
+        showCancelConfirm={false}
+        onConfirmCancel={mockOnConfirmCancel}
+        onRejectCancel={mockOnRejectCancel}
+        <%_ } _%>
+        showDeleteConfirm={true}
+        onConfirmDelete={mockOnConfirmDelete}
+        onRejectDelete={mockOnRejectDelete}
+      />
+    );
+
+    expect(screen.getByText('<%= resourceConstantName %>_DETAILS.DELETE.HEADER')).toBeInTheDocument();
+    expect(screen.getByText('<%= resourceConstantName %>_DETAILS.DELETE.MESSAGE')).toBeInTheDocument();
+  });
+
+  it('should not render delete confirm dialog when showDeleteConfirm is false', () => {
+    render(
+      <<%= resourceClassName %>DetailsDialogs
+        <%_ if(editMode){ _%>
+        showCancelConfirm={false}
+        onConfirmCancel={mockOnConfirmCancel}
+        onRejectCancel={mockOnRejectCancel}
+        <%_ } _%>
+        showDeleteConfirm={false}
+        onConfirmDelete={mockOnConfirmDelete}
+        onRejectDelete={mockOnRejectDelete}
+      />
+    );
+
+    expect(screen.queryByText('<%= resourceConstantName %>_DETAILS.DELETE.HEADER')).not.toBeInTheDocument();
+  });
+  <%_ } _%>
+});

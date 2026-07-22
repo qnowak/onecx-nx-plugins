@@ -1,0 +1,159 @@
+ifdef::env-site[]
+include::partial$_attributes.adoc[]
+endif::[]
+:imagesdir: ../../../images
+
+= Configure Search Add-ons
+
+Besides the search criteria and results, the generated React search page contains several add-ons that you may want to adapt: the breadcrumb, the header actions (chart toggle and export), the permission gating and the translations.
+
+
+[#action-s12]
+== ACTION S12 - Breadcrumb
+
+The header section component wires a default breadcrumb. Adjust the home target and items to match your portal base route (the `+href+` MFE base).
+
+[horizontal]
+Directory:: `+src/components/<feature>+`
+File::      `+<resource>-search-header-section.component.tsx+`
+
+.ACTION S12 in `+<resource>-search-header-section.component.tsx+`
+[%collapsible]
+====
+[source, tsx]
+----
+    // ACTION S12: wire the breadcrumb home/items to your portal base route (the `href` MFE base) if needed
+    breadcrumbHome={{ icon: 'pi pi-home', url: '/' }}
+    breadcrumbItems={[{ label: t(`${SEARCH_PREFIX}.BREADCRUMB`) }]}
+----
+Point `+breadcrumbHome.url+` to your application base route and adjust the items as needed.
+====
+
+
+[#action-s13]
+== ACTION S13 - Permission gating
+
+The search page is wrapped in a `+PortalPage+` that is gated on the `+<RESOURCE>#SEARCH+` permission. Users without that permission do not see the page content.
+
+[horizontal]
+Directory:: `+src/pages/<feature>/<resource>-search+`
+File::      `+<resource>-search.page.tsx+`
+
+.ACTION S13 in `+<resource>-search.page.tsx+`
+[%collapsible]
+====
+[source, tsx]
+----
+    // ACTION S13: the page is gated on the SEARCH permission; the `standalone` flag skips gating for standalone apps
+    <PortalPage
+      permission="<RESOURCE>#SEARCH"
+      ariaLabel={t('<RESOURCE>_SEARCH.ARIA_LABEL')}
+    >
+----
+Generate with `+--standalone+` to skip permission gating for standalone apps (the `+permission+` prop is then omitted).
+====
+
+[NOTE]
+The matching permissions are added to `+helm/values.yaml+` during generation. Make sure the permission exists in your auth system.
+
+
+[#action-s9]
+== ACTION S9 - Results chart
+
+The header provides a "Show chart" / "Hide chart" action. The generated handler only toggles visibility; implement the actual chart rendering.
+
+[horizontal]
+Directory:: `+src/pages/<feature>/<resource>-search+`
+File::      `+<resource>-search.page.tsx+`
+
+.ACTION S9 in `+<resource>-search.page.tsx+`
+[%collapsible]
+====
+[source, tsx]
+----
+  const handleToggleChart = () => {
+    // ACTION S9: render the results chart; this only toggles visibility for now
+    setChartVisible((visible) => !visible);
+  };
+----
+Render your chart component based on the `+chartVisible+` state and the current `+results+`.
+====
+
+
+[#action-s10]
+== ACTION S10 - CSV export
+
+The "Export all" header action is stubbed. Implement the CSV export of the current results.
+
+[horizontal]
+Directory:: `+src/pages/<feature>/<resource>-search+`
+File::      `+<resource>-search.page.tsx+`
+
+.ACTION S10 in `+<resource>-search.page.tsx+`
+[%collapsible]
+====
+[source, tsx]
+----
+  const handleExportAll = () => {
+    // ACTION S10: implement CSV export of the current results
+    if (typeof window !== 'undefined') {
+      window.alert('Export all is not implemented yet.');
+    }
+  };
+----
+Replace the placeholder with logic that serializes `+results+` to CSV and triggers a download.
+====
+
+
+[#action-s8]
+== ACTION S8 - Translations
+
+The generator merges i18n templates into your translation files. Every generated value is the placeholder `+ACTION S8: ADD TRANSLATION+`. Replace each placeholder with the actual text, and add keys for the criteria fields and result columns you introduced in xref:./search-criteria.adoc[Search Criteria] and xref:./search-results.adoc[Search Results].
+
+[horizontal]
+Directory:: `+src/assets/i18n+` (merged into `+en.json+`, `+de.json+`, ...)
+File::      generated from `+master.json+`
+
+.ACTION S8 - generated translation keys (excerpt)
+[%collapsible]
+====
+[source, json]
+----
+{
+  "<RESOURCE>_SEARCH": {
+    "HEADER": "ACTION S8: ADD TRANSLATION",
+    "SUB_HEADER": "ACTION S8: ADD TRANSLATION",
+    "ARIA_LABEL": "ACTION S8: ADD TRANSLATION",
+    "EMPTY_RESULTS": "ACTION S8: ADD TRANSLATION",
+    "BREADCRUMB": "ACTION S8: ADD TRANSLATION",
+    "HEADER_ACTIONS": {
+      "EXPORT_ALL": "ACTION S8: ADD TRANSLATION",
+      "SHOW_CHART": "ACTION S8: ADD TRANSLATION",
+      "HIDE_CHART": "ACTION S8: ADD TRANSLATION"
+    },
+    "RESULTS": {
+      "ID": "ACTION S8: ADD TRANSLATION",
+      "ACTIONS": "ACTION S8: ADD TRANSLATION",
+      "COLUMN_GROUP": "ACTION S8: ADD TRANSLATION",
+      "COLUMN_SETTINGS": "ACTION S8: ADD TRANSLATION",
+      "NAME": "ACTION S8: ADD TRANSLATION"
+    },
+    "ERROR_MESSAGES": {
+      "SEARCH_RESULTS_LOADING_FAILED": "ACTION S8: ADD TRANSLATION"
+    },
+    "CRITERIA": {
+      "ACTIONS": {
+        "SEARCH": "ACTION S8: ADD TRANSLATION",
+        "RESET": "ACTION S8: ADD TRANSLATION"
+      },
+      "CHANGE_ME": {
+        "LABEL": "ACTION S8: ADD TRANSLATION",
+        "PLACEHOLDER": "ACTION S8: ADD TRANSLATION",
+        "ARIA_LABEL": "ACTION S8: ADD TRANSLATION"
+      }
+    }
+  }
+}
+----
+Replace the `+CHANGE_ME+` block with the keys for your actual criteria, and add a `+RESULTS.<COLUMN>+` key for each column.
+====

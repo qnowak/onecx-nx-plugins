@@ -1,0 +1,157 @@
+ifdef::env-site[]
+include::partial$_attributes.adoc[]
+endif::[]
+:imagesdir: ../../images
+
+= Create a React Search Page
+
+What is a Page?::
+ifdef::env-site[]
+include::partial$_glossary.adoc[tag=component]
+endif::[]
+
+Search Page and Entity/Resource::
+The Search Page is a specific type of page that provides a user interface for searching and displaying results based on a certain entity or resource. +
+The entity or resource represents the data model that the search page interacts with. Therefore, the resource is the base parameter for the generation of a React search page.
+
+[NOTE]
+This page describes the *React* search generator (`react-search`). For the Angular variant, see xref:../generator/create-search.adoc[Create a Search Component].
+
+
+== Generate a React Search Page
+
+The current working directory must be the root of an existing OneCX React UI Application.
+
+The generator presets the API class name to `+<Resource>Api+` used by the generated search page, derived from the feature name. This should correspond to the schema created in the OpenAPI file.
+
+.Create a React search page with the following command
+[source,bash]
+----
+nx generate <namespace>/react-generator:react-search <feature>
+----
+
+with:
+[horizontal]
+ifdef::env-site[]
+include::partial$_parameter.adoc[tag=namespace]
+include::partial$_parameter.adoc[tag=featureName]
+endif::[]
+
+Next, *you will be asked* if you would like to customize the names for the generated API.
+
+[horizontal]
+ifdef::env-site[]
+include::partial$_parameter.adoc[tag=customizeNamingForAPI]
+endif::[]
+
+If you answer *No*, the generator derives the resource name (and the `+Search<Resource>Request+` / `+Search<Resource>Response+` names) from the feature name. This is the fastest way. +
+If you answer *Yes*, you can specify a name for the resource/entity and the API request/response components. This can be helpful if you want to customize an existing API.
+
+The generator creates a new search page within the specified feature and sets up the necessary structure and configurations.
+
+// TODO: capture screenshot of the react-search generator prompt (customize naming = Yes)
+.Example: React search page for books - answering "Yes" to customize naming
+image::react_generated_feature_book_search_book_yes.png[]
+
+
+=== Generated Structure
+The generator creates the following files (exemplary for the *book* feature, resource *Book*):
+
+[source, text]
+----
+src/pages/<feature>/<resource>-search/
+  <resource>-search.page.tsx        # Main search page component (BookSearchPage)
+  <resource>-search.types.ts        # Search criteria, row + column definitions
+  <resource>-search.page.spec.tsx   # Jest/Testing Library tests
+
+src/components/<feature>/
+  <resource>-search-header-section.component.tsx    # Search criteria input UI
+  <resource>-search-results-section.component.tsx   # Results table / interactive data view
+
+src/hooks/use<Resource>Search/
+  use<Resource>Search.ts            # React Query search hook
+  use<Resource>Search.spec.tsx      # Hook tests
+
+src/components/accelerator/         # Shared UI building blocks (generated only once)
+  PortalPage.tsx, PageHeader.tsx, SearchHeader.tsx,
+  Content.tsx, ContentContainer.tsx, InteractiveDataView.tsx,
+  usePermissions.tsx, index.ts
+----
+
+The `+src/components/accelerator/+` library is generated *only on the first run* of a React generator and reused by subsequent search and page generators.
+
+
+=== Key Naming Conventions
+* `src/pages/<feature>/<resource>-search` +
+  Directory for the search page and its related files
+* `<Resource>SearchPage` +
+  Name for the search page component
+* `<Resource>Api` +
+  Name for the generated API class used by the search hook
+* `use<Resource>Search` +
+  Name for the React Query search hook
+* `<RESOURCE>_SEARCH` +
+  Prefix for the generated i18n translation keys
+
+The generator also registers the page in the feature barrel `+src/pages/<feature>/index.tsx+`, adds the search endpoint to `+src/assets/api/openapi-bff.yaml+`, merges i18n templates and adds permissions to `+helm/values.yaml+`.
+
+
+[#post-generation-steps]
+== Post-Generation Steps
+The next steps involve adapting the search page to your specific requirements. All parts that need to be adapted after the generation are described in the following sections.
+
+. xref:./react-search/search-criteria.adoc[Configure Search Criteria]
+. xref:./react-search/search-results.adoc[Configure Search Results]
+. xref:./react-search/search-add-ons.adoc[Configure Search Add-ons]
+. xref:./react-search/search-tests.adoc[Configure Search Tests]
+. xref:./react-search/mock-api.adoc[Map the API and Prepare Mock Data]
+
+.All places that need to be adapted are marked with an action box like this one
+[source, javascript]
+----
+ACTION S<NUMBER>: <Short Description>
+----
+
+[TIP]
+Search in your IDE for the string `*ACTION S*` to quickly find all places that need to be adapted.
+
+
+== Example
+
+=== Create a React Search Page
+
+Create a search page for books inside the *book* feature. +
+Execute the following command with the *bookstore* application as current working directory.
+
+.Create a React Search Page for Books
+[source,bash]
+----
+nx generate @onecx/react-generator:react-search book
+----
+
+This command generates a new search page *book-search* within the *book* feature with the necessary structure and configurations. The generator presets the API class name to *BookApi* used by the generated search hook. This should correspond to the created schema in the OpenAPI file.
+
+// TODO: capture screenshot of generated react search files/directories for the book feature
+.Excerpt of generated files and directories
+image::react_generated_feature_book_search.png[width=250]
+
+
+=== Configure the Search
+The generated search page provides a basic structure for searching and displaying results based on the specified resource/entity. +
+You can further configure the search criteria, search results, header actions and tests according to your specific requirements, following the xref:#post-generation-steps[Post Generation Steps].
+
+
+=== Start Backend Service
+To have the search page working, you need a backend service running that provides the necessary API endpoints for the search functionality. +
+In case you don't have a real backend service available, you can prepare mock data and use it with the generated search page, see xref:./react-search/mock-api.adoc[Map the API and Prepare Mock Data].
+
+
+=== Preview
+
+// TODO: capture screenshot of the generated React search page (unchanged, as generated)
+.Search UI after integration into the application
+image::react_generated_book_search_component_org.png[]
+
+// TODO: capture screenshot of the React search page with adapted criteria/results and example data
+.Search UI with adapted search and example data
+image::react_generated_book_search_component_books.png[]

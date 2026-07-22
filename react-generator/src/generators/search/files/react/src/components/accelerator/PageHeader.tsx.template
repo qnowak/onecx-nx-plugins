@@ -1,0 +1,216 @@
+import { BreadCrumb } from 'primereact/breadcrumb';
+import { Button } from 'primereact/button';
+import { Menu } from 'primereact/menu';
+import type { MenuItem } from 'primereact/menuitem';
+import {
+  useRef,
+  type FC,
+  type PropsWithChildren,
+  type ReactNode,
+} from 'react';
+
+import { usePermissions, type PermissionInput } from './usePermissions';
+
+export type BreadcrumbItem = {
+  icon?: string;
+  label?: string;
+  url?: string;
+  command?: () => void;
+};
+
+/**
+ * Header action definition. React equivalent of the OneCX Angular
+ * `ocx-page-header` `Action`. Labels/titles are expected to be already
+ * translated by the caller (the accelerator layer is i18n-agnostic).
+ */
+export interface Action {
+  id?: string;
+  label?: string;
+  labelKey?: string;
+  icon?: string;
+  iconPos?: 'left' | 'right' | 'top' | 'bottom';
+  /** Permission required to show this action. Omit to always show. */
+  permission?: PermissionInput;
+  title?: string;
+  titleKey?: string;
+  ariaLabel?: string;
+  ariaLabelKey?: string;
+  className?: string;
+  btnClass?: string;
+  outlined?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
+  onClick?: () => void;
+  actionCallback?: () => void;
+  /** `always` renders inline as a button, `asOverflow` moves it into the overflow menu. Defaults to `always`. */
+  show?: 'always' | 'asOverflow';
+  conditional?: boolean;
+  showCondition?: boolean;
+}
+
+export type PageHeaderProps = PropsWithChildren<{
+  header: string;
+  subheader?: string;
+  loading?: boolean;
+  actions?: Action[];
+  ariaLabel?: string;
+  breadcrumbHome?: BreadcrumbItem;
+  breadcrumbItems?: BreadcrumbItem[];
+  showBreadcrumbs?: boolean;
+  manualBreadcrumbs?: boolean;
+  showFigure?: boolean;
+  figureImage?: string;
+  figureIconClassName?: string;
+  cardClassName?: string;
+  overflowActionsAriaLabel?: string;
+  additionalToolbarContent?: ReactNode;
+  additionalToolbarContentLeft?: ReactNode;
+}>;
+
+const resolveLabel = (action: Action): string | undefined =>
+  action.label ?? action.labelKey;
+
+const resolveTitle = (action: Action): string | undefined =>
+  action.title ?? action.titleKey;
+
+const resolveAriaLabel = (action: Action): string | undefined =>
+  action.ariaLabel ??
+  action.ariaLabelKey ??
+  resolveTitle(action) ??
+  resolveLabel(action);
+
+const isConditionMet = (action: Action): boolean =>
+  !action.conditional || !!action.showCondition;
+
+export const PageHeader: FC<PageHeaderProps> = ({
+  actions = [],
+  ariaLabel,
+  breadcrumbHome,
+  breadcrumbItems = [],
+  cardClassName = 'surface-card border-1 surface-border border-round shadow-1 overflow-hidden mb-4',
+  children,
+  figureIconClassName = 'bg-primary border-round-sm',
+  header,
+  loading = false,
+  manualBreadcrumbs,
+  showBreadcrumbs = true,
+  showFigure = true,
+  subheader,
+  overflowActionsAriaLabel = 'More actions',
+  additionalToolbarContent,
+  additionalToolbarContentLeft,
+}) => {
+  const { hasPermission } = usePermissions();
+  const overflowMenuRef = useRef<Menu>(null);
+
+  const visibleActions = actions
+    .filter((action) => isConditionMet(action))
+    .filter((action) => hasPermission(action.permission));
+
+  const inlineActions = visibleActions.filter(
+    (action) => (action.show ?? 'always') === 'always'
+  );
+  const overflowActions = visibleActions.filter(
+    (action) => action.show === 'asOverflow'
+  );
+
+  const overflowItems: MenuItem[] = overflowActions.map((action) => ({
+    id: action.id,
+    label: resolveLabel(action),
+    icon: action.icon,
+    disabled: action.disabled,
+    command: () => (action.onClick ?? action.actionCallback)?.(),
+  }));
+
+  const showBreadcrumbBar =
+    showBreadcrumbs && (!!breadcrumbHome || breadcrumbItems.length > 0);
+
+  return (
+    <section
+      className={cardClassName}
+      aria-busy={loading}
+      data-manual-breadcrumbs={manualBreadcrumbs ? 'true' : undefined}
+    >
+      {showBreadcrumbBar ? (
+        <div className="p-3 border-bottom-1 surface-border">
+          <BreadCrumb
+            home={breadcrumbHome}
+            model={breadcrumbItems}
+            className="border-none p-0 bg-transparent"
+          />
+        </div>
+      ) : null}
+
+      <div
+        className="surface-ground flex flex-column md:flex-row md:justify-content-between align-items-start md:align-items-center gap-3 p-3"
+        aria-label={ariaLabel}
+      >
+        <div className="flex flex-row align-items-center gap-2">
+          {showFigure ? (
+            <div className="relative flex w-2rem h-2rem md:w-3rem md:h-3rem shrink-0">
+              <span
+                className={['absolute top-0 left-0 right-0 bottom-0', figureIconClassName]
+                  .filter(Boolean)
+                  .join(' ')}
+                aria-hidden="true"
+              />
+            </div>
+          ) : null}
+          <div className="flex flex-column align-items-start justify-content-center min-w-0">
+            <h1 className="m-0 p-0 text-base font-bold line-height-3">{header}</h1>
+            {subheader ? (
+              <div className="m-0 p-0 text-sm text-600 line-height-3">{subheader}</div>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="flex h-full gap-2 align-items-center justify-content-between mt-2 md:mt-0">
+          {additionalToolbarContentLeft}
+
+          {inlineActions.length > 0 ? (
+            <div className="flex flex-wrap gap-1 sm:gap-2">
+              {inlineActions.map((action, index) => (
+                <Button
+                  key={action.id ?? resolveLabel(action) ?? index}
+                  label={resolveLabel(action)}
+                  icon={action.icon}
+                  iconPos={action.iconPos}
+                  outlined={action.outlined}
+                  disabled={action.disabled}
+                  loading={action.loading}
+                  tooltip={resolveTitle(action)}
+                  tooltipOptions={{ position: 'top', event: 'hover' }}
+                  aria-label={resolveAriaLabel(action)}
+                  className={action.className ?? action.btnClass}
+                  onClick={action.onClick ?? action.actionCallback}
+                />
+              ))}
+            </div>
+          ) : null}
+
+          {overflowItems.length > 0 ? (
+            <>
+              <Menu model={overflowItems} popup ref={overflowMenuRef} appendTo="self" />
+              <Button
+                type="button"
+                icon="pi pi-ellipsis-v"
+                className="p-button-text"
+                aria-haspopup
+                aria-label={overflowActionsAriaLabel}
+                onClick={(event) => overflowMenuRef.current?.toggle(event)}
+              />
+            </>
+          ) : null}
+
+          {additionalToolbarContent}
+        </div>
+      </div>
+
+      {children ? (
+        <div className="border-top-1 surface-border p-3">{children}</div>
+      ) : null}
+    </section>
+  );
+};
+
+export default PageHeader;

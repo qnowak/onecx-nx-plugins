@@ -1,0 +1,7 @@
+{
+  "<%= pageConstantName %>": {
+    "HEADER": "<%= pageTitle %>",
+    "SUB_HEADER": "Erstellt vom OneCX App Generator",
+    "ARIA_LABEL": "<%= pageClassName %>-Seite"
+  }
+}

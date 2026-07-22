@@ -1,0 +1,49 @@
+{
+  "<%= resourceConstantName %>_DETAILS": {
+    "HEADER": "<%= resourceClassName %> Details",
+    "SUB_HEADER": "Display of <%= resourceClassName %> Details",
+    "HELP_ARTICLE_ID": "Help Article",
+    "BREADCRUMB": "Details",
+    "ARIA_LABEL": "Page Header with Details",
+    "ERROR_MESSAGES": {
+      "DETAILS_LOADING_FAILED": "Loading details failed."
+    },
+    "GENERAL": {
+      "BACK": "Back",
+      "MORE": "More",
+      "EDIT": "Edit",
+      "DELETE": "Delete",
+      "CANCEL": "Cancel",
+      "SAVE": "Save",
+      "YES": "Yes",
+      "NO": "No"
+    },
+    "FORM": {
+      "ID": "ID",
+      "NAME": "Page Header with Details",
+      "FORM_FIELDS": "ACTION D3: Add additional form field translation keys here"
+    },
+    "CANCEL": {
+      "HEADER": "Confirm cancellation",
+      "MESSAGE": "Please confirm that you want to cancel editing and reset changes.",
+      "CONFIRM": "Confirm"
+    },
+    "UPDATE": {
+      "SUCCESS": "Update successful",
+      "ERROR": "Update failed",
+      "FORM": {
+        "SAVE": "Save",
+        "CANCEL": "Cancel"
+      },
+      "HEADER": "Update <%= resourceClassName %>"
+    },
+    "DELETE": {
+      "HEADER": "Delete <%= resourceClassName %>",
+      "MESSAGE": "Please confirm that you want to delete this <%= resourceClassName %> item.",
+      "CONFIRM": "Confirm",
+      "CANCEL": "Cancel",
+      "SUCCESS": "<%= resourceClassName %> deleted successfully",
+      "ERROR": "Could not delete <%= resourceClassName %>"
+    }
+  }
+}

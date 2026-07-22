@@ -1,0 +1,8 @@
+import React from 'react'
+
+// Barrel export file for <%= featureClassName %> feature
+// Page exports will be added by other generators (e.g., search, details)
+
+export default function <%= featureClassName %>Feature() {
+  return <div><%= featureClassName %> feature - add pages using search generator or other generators</div>
+}

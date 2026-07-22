@@ -1,0 +1,64 @@
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { <%= resourceClassName %>DetailsBreadcrumbs } from './<%= resourceFileName %>-details-breadcrumbs';
+
+describe('<%= resourceClassName %>DetailsBreadcrumbs', () => {
+  const mockOnRootClick = vi.fn();
+
+  beforeEach(() => {
+    mockOnRootClick.mockClear();
+  });
+
+  it('should render breadcrumbs with correct labels', () => {
+    render(
+      <<%= resourceClassName %>DetailsBreadcrumbs
+        rootLabel="Test Feature"
+        currentLabel="Test Details"
+        onRootClick={mockOnRootClick}
+      />
+    );
+
+    expect(screen.getByText('Test Feature')).toBeInTheDocument();
+    expect(screen.getByText('Test Details')).toBeInTheDocument();
+  });
+
+  it('should call onRootClick when root label is clicked', () => {
+    render(
+      <<%= resourceClassName %>DetailsBreadcrumbs
+        rootLabel="Test Feature"
+        currentLabel="Test Details"
+        onRootClick={mockOnRootClick}
+      />
+    );
+
+    fireEvent.click(screen.getByText('Test Feature'));
+    expect(mockOnRootClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call onRootClick when home icon is clicked', () => {
+    render(
+      <<%= resourceClassName %>DetailsBreadcrumbs
+        rootLabel="Test Feature"
+        currentLabel="Test Details"
+        onRootClick={mockOnRootClick}
+      />
+    );
+
+    const homeIcon = screen.getByTestId('home-icon');
+    fireEvent.click(homeIcon);
+    expect(mockOnRootClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('should render chevron icon between labels', () => {
+    render(
+      <<%= resourceClassName %>DetailsBreadcrumbs
+        rootLabel="Test Feature"
+        currentLabel="Test Details"
+        onRootClick={mockOnRootClick}
+      />
+    );
+
+    const chevron = screen.getByTestId('chevron-icon');
+    expect(chevron).toBeInTheDocument();
+  });
+});
