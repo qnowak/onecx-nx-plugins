@@ -33,6 +33,7 @@ app:
         productName: *product_name
         name: OneCX <%= remoteModuleName %> UI
         description: OneCX <%= remoteModuleName %> Frontend
+        type: ui
     # Permission
     permission:
       enabled: true
