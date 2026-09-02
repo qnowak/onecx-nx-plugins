@@ -11,7 +11,7 @@ The following actions must be taken.
 [#action-s5]
 == ACTION S5
 
-If not yet done, specify the base entity properties in the OpenAPI specification, see xref:generator/create-schema.adoc[].
+If not yet done, specify the base entity properties in the OpenAPI specification, see xref:angular/create-schema.adoc[].
 
 
 [#action-s6]

@@ -47,7 +47,7 @@ If you answer *No*, the generator will use the preset resource name to derive th
 If you answer *Yes*, you can specify a name for the API in the following questions. This can be helpful if you want to customize an existing API.
 
 The generator will create a new feature module with the specified name and set up the necessary structure and configurations. +
-Next steps may create components, services, and state management logic within the feature module as needed, e.g. xref:./create-react-search.adoc[create a React search page].
+Next steps may create components, services, and state management logic within the feature module as needed, e.g. xref:./create-search.adoc[create a React search page].
 
 === Key Naming Conventions
 

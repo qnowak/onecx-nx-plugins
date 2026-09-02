@@ -14,7 +14,7 @@ Empty Page::
 The React page generator creates a minimal, ready-to-use page with a header and a content area. It is the right starting point for utility pages such as settings, about or dashboard pages that do not need search or API integration.
 
 [NOTE]
-This page describes the *React* page generator (`react-page`). For a data-driven search page, see xref:./create-react-search.adoc[Create a React Search Page].
+This page describes the *React* page generator (`react-page`). For a data-driven search page, see xref:./create-search.adoc[Create a React Search Page].
 
 
 == Generate a React Page

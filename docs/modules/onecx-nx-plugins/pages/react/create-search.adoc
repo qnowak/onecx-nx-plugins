@@ -100,11 +100,11 @@ The generator also registers the page in the feature barrel `+src/pages/<feature
 == Post-Generation Steps
 The next steps involve adapting the search page to your specific requirements. All parts that need to be adapted after the generation are described in the following sections.
 
-. xref:./react-search/search-criteria.adoc[Configure Search Criteria]
-. xref:./react-search/search-results.adoc[Configure Search Results]
-. xref:./react-search/search-add-ons.adoc[Configure Search Add-ons]
-. xref:./react-search/search-tests.adoc[Configure Search Tests]
-. xref:./react-search/mock-api.adoc[Map the API and Prepare Mock Data]
+. xref:./react/search/search-criteria.adoc[Configure Search Criteria]
+. xref:./react/search/search-results.adoc[Configure Search Results]
+. xref:./react/search/search-add-ons.adoc[Configure Search Add-ons]
+. xref:./react/search/search-tests.adoc[Configure Search Tests]
+. xref:./react/search/mock-api.adoc[Map the API and Prepare Mock Data]
 
 .All places that need to be adapted are marked with an action box like this one
 [source, javascript]
@@ -143,7 +143,7 @@ You can further configure the search criteria, search results, header actions an
 
 === Start Backend Service
 To have the search page working, you need a backend service running that provides the necessary API endpoints for the search functionality. +
-In case you don't have a real backend service available, you can prepare mock data and use it with the generated search page, see xref:./react-search/mock-api.adoc[Map the API and Prepare Mock Data].
+In case you don't have a real backend service available, you can prepare mock data and use it with the generated search page, see xref:./react/search/mock-api.adoc[Map the API and Prepare Mock Data].
 
 
 === Preview

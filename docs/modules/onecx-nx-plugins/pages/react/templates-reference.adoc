@@ -1,0 +1,19 @@
+// Templates reference
+
+= Templates Reference
+
+This partial lists generator template files and the common variables they expose.
+
+== React generator templates (selected)
+
+- `files/helm/values.yaml.template` — produces Helm values used by OneCX operator. Variables: `className`, `fileName`, `remoteModuleName`, `tagName`, `shareScope`.
+- `files/vite.config.ts.template` — Vite configuration for the generated app; may reference exposed module path.
+- `files/src/bootstrap.ts.template` — Bootstrapping code that registers web component entrypoint using `tagName`.
+
+== Variable conventions
+
+- `className`: PascalCase module/class name inserted into module exports.
+- `fileName`: kebab-case project identifier used in `remoteName` and `tagName`.
+- `shareScope`: optional value for module federation share scope (e.g., `react_19`).
+
+If you add new templates, update this partial and link it from the Shared Generator Guide.

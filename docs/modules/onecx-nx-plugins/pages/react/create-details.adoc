@@ -59,8 +59,8 @@ image::generated_feature_book_detail_book_yes_react.png[]
 == Post-Generation Steps
 The next steps involve adapting the detail page to your specific requirements and integrating it into other parts of the application. All parts that need to be adapted after the generation are described in the following sections.
 
-* xref:./react-details/detail-properties-react.adoc[Configure Detail Properties (React)]
-* xref:./react-details/detail-tests-react.adoc[Configure Detail Tests (React)]
+* xref:./react/details/detail-properties-react.adoc[Configure Detail Properties (React)]
+* xref:./react/details/detail-tests-react.adoc[Configure Detail Tests (React)]
 
 .All places that need to be adapted are marked with an action box like this one
 [source, javascript]

@@ -15,8 +15,8 @@ The generator creates **4 new components** in the OpenAPI specification for Crea
 
 [NOTE]
 ====
-The Request objects are referencing the xref:generator/glossary.adoc#resource[`Resource`], its properties are used by the form.
-You can modify it, but check xref:generator/glossary.adoc#resource[`here`] for side effects.
+The Request objects are referencing the xref:angular/glossary.adoc#resource[`Resource`], its properties are used by the form.
+You can modify it, but check xref:angular/glossary.adoc#resource[`here`] for side effects.
 
 Changes to the response object itself require modification in the response handling. By default other response properties (apart from resource) are ignored.
 ==== 
@@ -25,7 +25,7 @@ Changes to the response object itself require modification in the response handl
 === ACTION C2: Add form fields to html component
 _Adapt in File:_  `+<feature>-create-update.component.html+`
 
-Add new form fields similar to the generated example. Please, ensure that form control names match the xref:generator/glossary.adoc#resource[`Resource`] properties.
+Add new form fields similar to the generated example. Please, ensure that form control names match the xref:angular/glossary.adoc#resource[`Resource`] properties.
 
 .Example resource
 [source,yaml]
@@ -67,7 +67,7 @@ properties:
 === ACTION C3: Add form fields to ts component
 _Adapt in File:_  `+<feature>-create-update.component.ts+`
 
-Add new form controls to the formGroup. Please, ensure that form control names match the properties of your xref:generator/glossary.adoc#resource[`Resource`].
+Add new form controls to the formGroup. Please, ensure that form control names match the properties of your xref:angular/glossary.adoc#resource[`Resource`].
 
 Use appropriate validators if required.
 

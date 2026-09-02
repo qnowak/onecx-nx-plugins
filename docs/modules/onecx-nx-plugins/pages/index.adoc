@@ -12,7 +12,7 @@ The OneCX UI App Generator is a powerful tool that simplifies the development of
 
 *To clearly explain* how the generator works and the necessary adjustments, this guide uses a practical example: an *application to manage Books*. The *Bookstore* application allows users to search for books, view details about them, and manage their properties.
 
-In case you want to take part of the development of the generator or want to use it locally without installing it globally from npm, see the xref:generator/development.adoc[Development Guide] for instructions on how to get the generator and set up the development environment.
+In case you want to take part of the development of the generator or want to use it locally without installing it globally from npm, see the xref:angular/development.adoc[Development Guide] for instructions on how to get the generator and set up the development environment.
 
 [IMPORTANT]
 ====
@@ -93,14 +93,14 @@ Make the adjustments carefully and in accordance with the specifications and nam
 === Start Generation
 Here is an overview of the application parts that can be generated using the OneCX App Generator. Start from top to bottom, i.e. first generate the application, then the feature module, and then the pages. The generator will guide you through the necessary steps and parameters for each part.
 
-* xref:generator/create-app.adoc[OneCX UI App] <= *start here*
-** xref:generator/create-feature.adoc[Feature Module]
-*** xref:generator/create-schema.adoc[Entity Schema and OpenAPI]
-*** xref:generator/create-search.adoc[Search Component]
-*** xref:generator/create-details.adoc[Details Component]
+* xref:angular/create-app.adoc[OneCX UI App] <= *start here*
+** xref:angular/create-feature.adoc[Feature Module]
+*** xref:angular/create-schema.adoc[Entity Schema and OpenAPI]
+*** xref:angular/create-search.adoc[Search Component]
+*** xref:angular/create-details.adoc[Details Component]
 *** Create/Update Dialog
 *** Delete Dialog
-*** xref:generator/create-ngrx-page.adoc[Simple NgRx Page]
+*** xref:angular/create-ngrx-page.adoc[Simple NgRx Page]
 
 
 [TIP]
@@ -155,11 +155,11 @@ image::generated_and_test.png[]
 
 In addition to the Angular generators, the OneCX App Generator provides generators for *React* UI applications. They follow the same iterative approach: generate a part, then adapt the places marked with *ACTION*.
 
-* xref:generator/create-react-feature.adoc[Create a Feature Module (React)] +
+* xref:angular/create-feature.adoc[Create a Feature Module (React)] +
   Generates a feature entry page and registers feature-level routing.
-* xref:generator/create-react-search.adoc[Create a React Search Page] +
+* xref:angular/create-search.adoc[Create a React Search Page] +
   A data-driven search page with criteria, results table, header actions and API integration.
-* xref:generator/create-react-details.adoc[Create a Detail Component (React)] +
+* xref:angular/create-details.adoc[Create a Detail Component (React)] +
   Generates details page, hook/store, and related UI components for a resource.
-* xref:generator/create-react-page.adoc[Create a React Page] +
+* xref:angular/create-page.adoc[Create a React Page] +
   A minimal, ready-to-use page with header and content area.
