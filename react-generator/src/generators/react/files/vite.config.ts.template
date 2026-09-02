@@ -11,7 +11,7 @@ const mfConfig: ModuleFederationOptions = {
   name: "onecx-<%= fileName %>-ui",
   filename: "remoteEntry.js",
   exposes: {
-    "./OneCX<%= className %>RemoteModule": "./src/bootstrap.ts",
+    "./OneCX<%= className %>Module": "./src/bootstrap.ts",
   },
    shared: {
     react: {
