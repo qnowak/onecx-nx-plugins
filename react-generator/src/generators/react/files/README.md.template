@@ -38,7 +38,7 @@ src/
 
 ## Module Federation
 
-This app exposes `./OneCX<%= className %>RemoteModule` as a remote module under the name `onecx-<%= fileName %>-ui`.
+This app exposes `./OneCX<%= className %>Module` as a remote module under the name `onecx-<%= fileName %>`.
 
 ## Environment variables
 

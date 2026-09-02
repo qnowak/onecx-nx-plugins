@@ -4,4 +4,4 @@ import './styles.css'
 import App from './App'
 
 // Web component entrypoint for embedding into the portal shell.
-createViteAppWebComponent(App, 'onecx-<%= fileName %>-ui-entrypoint')
+createViteAppWebComponent(App, 'ocx-<%= fileName %>-entrypoint')

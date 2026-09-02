@@ -19,13 +19,14 @@ app:
       specs:
         main:
           productName: *product_name
-          exposedModule: './OneCX<%= className %>RemoteModule'
-          description: 'OneCX <%= remoteModuleName %> UI'
-          note: 'OneCX <%= remoteModuleName %> UI module auto import via MF operator'
+          exposedModule: './OneCX<%= className %>Module'
+          shareScope: 'react_19'
+          description: 'OneCX <%= fileName %> UI'
+          note: 'OneCX <%= fileName %> UI auto import via MF operator'
           type: MODULE
           technology: WEBCOMPONENTMODULE
           remoteName: <%= remoteModuleFileName %>
-          tagName: onecx-<%= fileName %>-ui-entrypoint
+          tagName: ocx-<%= fileName %>-entrypoint
     # Microservice
     microservice:
       spec:
