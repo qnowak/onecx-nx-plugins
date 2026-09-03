@@ -1,3 +1,7 @@
+ifdef::env-site[]
+include::partial$_attributes.adoc[]
+endif::[]
+
 = Generator Utils
 
 This page documents the helper utilities available in the `generator-utils` library
@@ -29,72 +33,74 @@ Run unit tests:
 nx test generator-utils
 ----
 
-== API Reference & Examples
+== API Reference
 
 === deepMerge
 
-Signature
+Recursively merges plain objects and concatenates arrays. Later values replace
+earlier values for the same key. This is useful for combining nested
+configuration objects, such as Helm values fragments.
 
-[source]
+.`deepMerge` syntax
+[source,typescript]
 ----
-export function deepMerge(...objects: unknown[])
+export function deepMerge(...objects: unknown[]): object
 ----
 
-Description
-
-Recursively merges plain objects and concatenates arrays. Useful to combine
-multiple configuration objects (e.g. Helm values fragments) without losing
-nested structure.
-
-Example
-
-[source,js]
+[discrete]
+=== Example
+[source,typescript]
 ----
 const merged = deepMerge({a: [1]}, {a: [2], b: {c: 3}});
-// merged -> { a: [1,2], b: { c: 3 } }
+// merged: { a: [1, 2], b: { c: 3 } }
 ----
 
 === renderJsonFile
 
-Signature
+Renders a JSON file containing EJS template syntax and returns the parsed
+object. The file path is also passed to EJS so that included templates can be
+resolved relative to the file.
 
-[source]
+.`renderJsonFile` syntax
+[source,typescript]
 ----
-export function renderJsonFile(filePath: string, options: Record<string, unknown>)
+export function renderJsonFile(
+	filePath: string,
+	options: Record<string, unknown>
+): unknown
 ----
 
-Description
-
-Loads a JSON file that may contain EJS templating, renders it with provided
-options and returns the parsed object. Useful for i18n JSON templates or
-other JSON-based templates used by generators.
-
-Example
-
-[source,js]
+[discrete]
+=== Example
+[source,typescript]
 ----
 const obj = renderJsonFile('templates/messages.json.ejs', { name: 'Book' });
 ----
 
 === YAML helpers (readYaml / writeYaml / updateYaml)
 
-Signature
+Read, write and update YAML files through an Nx `Tree`. `readYaml` throws when
+the file does not exist or cannot be parsed. `updateYaml` reads the YAML,
+passes it to the updater and writes the returned value back to the same path.
 
-[source]
+.`readYaml`, `writeYaml` and `updateYaml` syntax
+[source,typescript]
 ----
-export function readYaml<T>(tree: Tree, path: string): T
-export function writeYaml<T>(tree: Tree, path: string, value: T): void
-export function updateYaml<T, U>(tree: Tree, path: string, updater: (v: T) => U)
+export function readYaml<T extends object = object>(tree: Tree, path: string): T
+export function writeYaml<T extends object = object>(
+	tree: Tree,
+	path: string,
+	value: T
+): void
+export function updateYaml<T extends object = object, U extends object = T>(
+	tree: Tree,
+	path: string,
+	updater: (value: T) => U
+): void
 ----
 
-Description
-
-Utilities to read, write and update YAML files using Nx `Tree`. `readYaml` will
-throw when the file is missing or cannot be parsed. `updateYaml` reads the YAML,
-applies the updater and writes the result back.
-
-Example
-
+[discrete]
+=== Example
 [source,ts]
 ----
 updateYaml(tree, 'charts/values.yaml', (v) => ({ ...v, app: { enabled: true } }));
@@ -102,9 +108,13 @@ updateYaml(tree, 'charts/values.yaml', (v) => ({ ...v, app: { enabled: true } })
 
 === safeReplace
 
-Signature
+Performs guarded textual replacements in a file. It validates that each
+pattern is present and avoids duplicating replacement content. If a
+replacement cannot be applied, it writes a comment to the file describing
+what failed so the author can continue manually.
 
-[source]
+.`safeReplace` syntax
+[source,typescript]
 ----
 export function safeReplace(
 	goal: string,
@@ -115,14 +125,8 @@ export function safeReplace(
 ): void
 ----
 
-Description
-
-Performs guarded textual replacements in a file. It validates presence of the
-pattern and avoids duplicating content. On failure it writes a helpful comment
-to the file describing what failed so the author can continue manually.
-
-Example
-
+[discrete]
+=== Example
 [source,ts]
 ----
 safeReplace(
@@ -136,46 +140,41 @@ safeReplace(
 
 === GeneratorStepError
 
-Signature
+Standard error type used by generator steps. `errorParameters.stopExecution`
+defaults to `false` and can be used by calling code to decide whether to abort
+generation or continue with best-effort behaviour.
 
-[source]
+.`GeneratorStepError` syntax
+[source,typescript]
 ----
 export class GeneratorStepError extends Error {
-	constructor(message: string, parameters?: { stopExecution: boolean })
+	constructor(message: string, parameters?: GeneratorStepErrorParameters)
 }
 ----
 
-Description
-
-Standard error type used by generator steps. `stopExecution` can be used by
-calling code to decide whether to abort the generation or continue with
-best-effort behaviour.
-
-Example
-
+[discrete]
+=== Example
 [source,ts]
 ----
 throw new GeneratorStepError('Missing schema file', { stopExecution: true });
 ----
 
-=== HelmValuesUtil / PermissionSectionUtil
-
-Overview
+=== HelmValuesUtil and PermissionSectionUtil
 
 Helper to manipulate Helm `values.yaml` content in a programmatic way. The
 utility parses YAML into an object, provides helpers to add permission entries
 and finally serializes back to YAML. It supports inserting comments via a
 special `~comment~` key which is rendered as `#` on finalize().
 
-Key methods
+Key methods include:
 
 - `new HelmValuesUtil(yamlString)` — create helper from YAML string
 - `permissions()` — access permission-specific section builder
 - `full()` — operate on full YAML content
 - `finalize()` — serialize to YAML string (comments restored)
 
-Example
-
+[discrete]
+=== Example
 [source,ts]
 ----
 const util = new HelmValuesUtil(fs.readFileSync('values.yaml', 'utf8'));
